@@ -2,8 +2,8 @@ import json
 import sys
 
 
-def load_events(json_file):
-    with open(json_file, "r") as f:
+def load_json(file_path):
+    with open(file_path, "r") as f:
         return json.load(f)
 
 
@@ -26,31 +26,6 @@ def check_condition(event, field, operator, expected):
     return False
 
 
-RULES = [
-    {
-        "name": "Suspicious Command Shell Spawned by FTP",
-        "conditions": [
-            ("ParentImage", "endswith", "\\ftp.exe"),
-            ("Image", "endswith", "\\cmd.exe"),
-        ]
-    },
-    {
-        "name": "MSHTA Execution of HTA File",
-        "conditions": [
-            ("Image", "endswith", "\\mshta.exe"),
-            ("CommandLine", "contains", ".hta"),
-        ]
-    },
-    {
-        "name": "Command Shell Spawned by WMI Provider",
-        "conditions": [
-            ("ParentImage", "endswith", "\\wmiprvse.exe"),
-            ("Image", "endswith", "\\cmd.exe"),
-        ]
-    }
-]
-
-
 def rule_matches(event, rule):
     for field, operator, expected in rule["conditions"]:
         if not check_condition(event, field, operator, expected):
@@ -59,11 +34,11 @@ def rule_matches(event, rule):
     return True
 
 
-def run_detection(events):
+def run_detection(events, rules):
     alerts = []
 
     for event in events:
-        for rule in RULES:
+        for rule in rules:
             if rule_matches(event, rule):
                 alerts.append({
                     "rule": rule["name"],
@@ -74,17 +49,24 @@ def run_detection(events):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("Usage:")
-        print("python src/detection_engine.py <events.json>")
+        print(
+            "python src/detection_engine.py "
+            "<events.json> <rules.json>"
+        )
         sys.exit(1)
 
-    events = load_events(sys.argv[1])
+    events_file = sys.argv[1]
+    rules_file = sys.argv[2]
 
-    alerts = run_detection(events)
+    events = load_json(events_file)
+    rules = load_json(rules_file)
+
+    alerts = run_detection(events, rules)
 
     print(f"Total Events: {len(events)}")
-    print(f"Total Rules: {len(RULES)}")
+    print(f"Total Rules: {len(rules)}")
     print(f"Total Alerts: {len(alerts)}")
 
     for alert in alerts:

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Suspicious Command Shell Spawned by FTP",
+    "conditions": [
+      ["ParentImage", "endswith", "\\ftp.exe"],
+      ["Image", "endswith", "\\cmd.exe"]
+    ]
+  },
+  {
+    "name": "MSHTA Execution of HTA File",
+    "conditions": [
+      ["Image", "endswith", "\\mshta.exe"],
+      ["CommandLine", "contains", ".hta"]
+    ]
+  },
+  {
+    "name": "Command Shell Spawned by WMI Provider",
+    "conditions": [
+      ["ParentImage", "endswith", "\\wmiprvse.exe"],
+      ["Image", "endswith", "\\cmd.exe"]
+    ]
+  }
+]
