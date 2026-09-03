@@ -7,17 +7,63 @@ def load_events(json_file):
         return json.load(f)
 
 
-def detect_suspicious_ftp_cmd(events):
-    matches = []
+def endswith(value, suffix):
+    return (value or "").lower().endswith(suffix.lower())
+
+
+def contains(value, text):
+    return text.lower() in (value or "").lower()
+
+
+def rule_1_ftp_cmd(event):
+    return (
+        endswith(event.get("ParentImage"), "\\ftp.exe")
+        and endswith(event.get("Image"), "\\cmd.exe")
+    )
+
+
+def rule_13_mshta(event):
+    return (
+        endswith(event.get("Image"), "\\mshta.exe")
+        and contains(event.get("CommandLine"), ".hta")
+    )
+
+
+def rule_15_wmi_cmd(event):
+    return (
+        endswith(event.get("ParentImage"), "\\wmiprvse.exe")
+        and endswith(event.get("Image"), "\\cmd.exe")
+    )
+
+
+RULES = [
+    {
+        "name": "Suspicious Command Shell Spawned by FTP",
+        "rule": rule_1_ftp_cmd
+    },
+    {
+        "name": "MSHTA Execution of HTA File",
+        "rule": rule_13_mshta
+    },
+    {
+        "name": "Command Shell Spawned by WMI Provider",
+        "rule": rule_15_wmi_cmd
+    }
+]
+
+
+def run_detection(events):
+    alerts = []
 
     for event in events:
-        parent_image = (event.get("ParentImage") or "").lower()
-        image = (event.get("Image") or "").lower()
+        for rule in RULES:
+            if rule["rule"](event):
+                alerts.append({
+                    "rule": rule["name"],
+                    "event": event
+                })
 
-        if parent_image.endswith("\\ftp.exe") and image.endswith("\\cmd.exe"):
-            matches.append(event)
-
-    return matches
+    return alerts
 
 
 if __name__ == "__main__":
@@ -26,21 +72,21 @@ if __name__ == "__main__":
         print("python src/detection_engine.py <events.json>")
         sys.exit(1)
 
-    json_file = sys.argv[1]
+    events = load_events(sys.argv[1])
 
-    events = load_events(json_file)
-
-    matches = detect_suspicious_ftp_cmd(events)
+    alerts = run_detection(events)
 
     print(f"Total Events: {len(events)}")
-    print(f"Detection Matches: {len(matches)}")
+    print(f"Total Alerts: {len(alerts)}")
 
-    for match in matches:
+    for alert in alerts:
+        event = alert["event"]
+
         print("=" * 60)
-        print("ALERT: Suspicious Command Shell Spawned by FTP")
-        print("Computer:", match.get("Computer"))
-        print("Time:", match.get("TimeCreated"))
-        print("User:", match.get("User"))
-        print("ParentImage:", match.get("ParentImage"))
-        print("Image:", match.get("Image"))
-        print("CommandLine:", match.get("CommandLine"))
+        print("ALERT:", alert["rule"])
+        print("Computer:", event.get("Computer"))
+        print("Time:", event.get("TimeCreated"))
+        print("User:", event.get("User"))
+        print("Image:", event.get("Image"))
+        print("CommandLine:", event.get("CommandLine"))
+        print("ParentImage:", event.get("ParentImage"))
