@@ -1,0 +1,41 @@
+{
+    "report": {
+        "engine": "Cyberion ThreatShield",
+        "generated_at": "2026-09-03T14:37:14.359688+05:30",
+        "source_file": "test_events.json",
+        "rules_file": "config/detection_rules.json",
+        "total_alerts": 1
+    },
+    "alerts": [
+        {
+            "rule_id": 14,
+            "rule_name": "Rundll32 PCWUTL LaunchApplication Execution",
+            "event": {
+                "EventID": "1",
+                "Computer": "IEWIN7",
+                "TimeCreated": "2019-05-12 17:09:02.275164+00:00",
+                "RuleName": null,
+                "UtcTime": "2019-05-12 17:09:02.275",
+                "ProcessGuid": "{365abb72-532e-5cd8-0000-00106c222700}",
+                "ProcessId": "1528",
+                "Image": "C:\\Windows\\System32\\rundll32.exe",
+                "FileVersion": "6.1.7600.16385 (win7_rtm.090713-1255)",
+                "Description": "Windows host process (Rundll32)",
+                "Product": "Microsoft® Windows® Operating System",
+                "Company": "Microsoft Corporation",
+                "CommandLine": "\"C:\\Windows\\System32\\rundll32.exe\"  pcwutl.dll,LaunchApplication c:\\Windows\\system32\\calc.exe",
+                "CurrentDirectory": "C:\\Users\\IEUser\\",
+                "User": "IEWIN7\\IEUser",
+                "LogonGuid": "{365abb72-4fb5-5cd8-0000-0020f2350100}",
+                "LogonId": "0x00000000000135f2",
+                "TerminalSessionId": "1",
+                "IntegrityLevel": "Medium",
+                "Hashes": "SHA1=892503B20247B341CFD20DDA5FDACFA41527A087,MD5=C648901695E275C8F2AD04B687A68CE2,SHA256=3FA4912EB43FC304652D7B01F118589259861E2D628FA7C86193E54D5F987670,IMPHASH=239D911DFA7551A8B735680BC39B2238",
+                "ParentProcessGuid": "{365abb72-516b-5cd8-0000-001087e41600}",
+                "ParentProcessId": "3788",
+                "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+                "ParentCommandLine": "\"C:\\Windows\\system32\\cmd.exe\" "
+            }
+        }
+    ]
+}

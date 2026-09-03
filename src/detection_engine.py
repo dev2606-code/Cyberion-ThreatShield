@@ -1,5 +1,7 @@
 import json
 import sys
+import os
+from datetime import datetime
 
 
 def load_json(file_path):
@@ -12,7 +14,8 @@ def load_json(file_path):
 
 def normalize(value):
     """
-    Convert values to lowercase strings for case-insensitive comparison.
+    Convert values to lowercase strings for
+    case-insensitive comparison.
     """
     if value is None:
         return ""
@@ -27,25 +30,17 @@ def check_condition(event, field, operator, expected):
 
     actual = event.get(field)
 
-    # Example:
-    # Image endswith \cmd.exe
     if operator == "endswith":
-        return normalize(actual).endswith(normalize(expected))
+        return normalize(actual).endswith(
+            normalize(expected)
+        )
 
-    # Example:
-    # CommandLine contains .hta
     if operator == "contains":
         return normalize(expected) in normalize(actual)
 
-    # Example:
-    # EventID equals 4625
     if operator == "equals":
         return normalize(actual) == normalize(expected)
 
-    # Example:
-    # ScriptBlockText must contain BOTH:
-    # Get-Process lsass
-    # MiniDumpWriteDump
     if operator == "contains_all":
         actual_normalized = normalize(actual)
 
@@ -59,7 +54,7 @@ def check_condition(event, field, operator, expected):
 
 def rule_matches(event, rule):
     """
-    Return True only when ALL conditions in a rule match.
+    Return True only when all rule conditions match.
     """
 
     for field, operator, expected in rule["conditions"]:
@@ -77,7 +72,7 @@ def rule_matches(event, rule):
 
 def run_detection(events, rules):
     """
-    Run all detection rules against all events.
+    Run every detection rule against every event.
     """
 
     alerts = []
@@ -91,7 +86,7 @@ def run_detection(events, rules):
                 alerts.append(
                     {
                         "rule_id": rule.get("id"),
-                        "rule": rule["name"],
+                        "rule_name": rule["name"],
                         "event": event
                     }
                 )
@@ -101,7 +96,7 @@ def run_detection(events, rules):
 
 def print_alert(alert):
     """
-    Display one alert in readable format.
+    Display one alert in the terminal.
     """
 
     event = alert["event"]
@@ -110,7 +105,7 @@ def print_alert(alert):
 
     print(
         f"ALERT [Rule {alert.get('rule_id')}]: "
-        f"{alert['rule']}"
+        f"{alert['rule_name']}"
     )
 
     print("EventID:", event.get("EventID"))
@@ -120,7 +115,9 @@ def print_alert(alert):
     important_fields = [
         "User",
         "TargetUserName",
+        "TargetDomainName",
         "Image",
+        "ImagePath",
         "CommandLine",
         "ParentImage",
         "ParentCommandLine",
@@ -140,11 +137,42 @@ def print_alert(alert):
 
         value = event.get(field)
 
-        if value:
+        if value is not None and value != "":
             print(f"{field}: {value}")
 
 
-if __name__ == "__main__":
+def export_alerts(alerts, events_file, rules_file):
+    """
+    Export detection results to reports/alerts.json.
+    """
+
+    os.makedirs("reports", exist_ok=True)
+
+    report = {
+        "report": {
+            "engine": "Cyberion ThreatShield",
+            "generated_at": datetime.now().astimezone().isoformat(),
+            "source_file": events_file,
+            "rules_file": rules_file,
+            "total_alerts": len(alerts)
+        },
+        "alerts": alerts
+    }
+
+    output_file = "reports/alerts.json"
+
+    with open(output_file, "w") as f:
+        json.dump(
+            report,
+            f,
+            indent=4,
+            ensure_ascii=False
+        )
+
+    return output_file
+
+
+def main():
 
     if len(sys.argv) != 3:
 
@@ -202,3 +230,17 @@ if __name__ == "__main__":
 
         for alert in alerts:
             print_alert(alert)
+
+    output_file = export_alerts(
+        alerts,
+        events_file,
+        rules_file
+    )
+
+    print()
+    print("-" * 40)
+    print(f"Alert report saved to: {output_file}")
+
+
+if __name__ == "__main__":
+    main()
