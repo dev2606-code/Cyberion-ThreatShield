@@ -1,0 +1,26 @@
+title: Command Shell Spawned by WMI Provider
+id: fecb5cd0-6a56-49a7-87cb-8efe701fbaa3
+status: experimental
+
+description: Detects cmd.exe being spawned by the Windows WMI Provider process WmiPrvSE.exe.
+
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  selection:
+    ParentImage|endswith: '\WmiPrvSE.exe'
+    Image|endswith: '\cmd.exe'
+
+  condition: selection
+
+falsepositives:
+  - Legitimate WMI administration
+  - Authorized remote management
+  - Enterprise management software
+
+level: high
+
+tags:
+  - attack.t1047

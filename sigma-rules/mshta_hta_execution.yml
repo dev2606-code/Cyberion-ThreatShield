@@ -1,0 +1,28 @@
+title: MSHTA Execution of HTA File
+id: a75417f6-659b-4daa-b2f2-424cd9b661ce
+status: experimental
+
+description: Detects mshta.exe executing an HTA file based on Windows process creation telemetry.
+
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  selection_image:
+    Image|endswith: '\mshta.exe'
+
+  selection_command:
+    CommandLine|contains: '.hta'
+
+  condition: selection_image and selection_command
+
+falsepositives:
+  - Legitimate HTA applications
+  - Authorized administrative scripts
+  - Legacy enterprise applications using mshta.exe
+
+level: medium
+
+tags:
+  - attack.t1218.005

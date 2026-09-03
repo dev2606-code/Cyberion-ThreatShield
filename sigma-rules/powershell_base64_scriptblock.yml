@@ -1,0 +1,27 @@
+title: PowerShell Script Block With Base64 Decoding
+id: c93ee30d-cd53-4bb9-8eeb-4c2fa0be01f3
+status: experimental
+
+description: Detects PowerShell Script Block Logging events containing FromBase64String, which can indicate encoded PowerShell content being decoded during execution.
+
+logsource:
+  product: windows
+  service: powershell
+
+detection:
+  selection:
+    EventID: 4104
+    ScriptBlockText|contains: 'FromBase64String'
+
+  condition: selection
+
+falsepositives:
+  - Legitimate administrative PowerShell scripts
+  - Software deployment scripts
+  - Approved automation using Base64-encoded data
+
+level: medium
+
+tags:
+  - attack.execution
+  - attack.t1059.001

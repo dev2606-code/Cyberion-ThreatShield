@@ -1,0 +1,25 @@
+title: Suspicious Command Shell Spawned by FTP
+id: 4cb88a38-8234-427e-9466-8244e073d9dc
+status: experimental
+
+description: Detects cmd.exe being launched by ftp.exe, which may indicate unusual command execution behavior.
+
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  selection:
+    ParentImage|endswith: '\ftp.exe'
+    Image|endswith: '\cmd.exe'
+
+  condition: selection
+
+falsepositives:
+  - Legitimate administrative or testing activity
+
+level: medium
+
+tags:
+  - attack.execution
+  - attack.t1059.003

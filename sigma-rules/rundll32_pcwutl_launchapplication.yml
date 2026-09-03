@@ -1,0 +1,28 @@
+title: Rundll32 PCWUTL LaunchApplication Execution
+id: ae4210f5-028f-4ab4-8680-fc44ebe4c433
+status: experimental
+
+description: Detects rundll32.exe using pcwutl.dll LaunchApplication to launch another application.
+
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  selection:
+    Image|endswith: '\rundll32.exe'
+    CommandLine|contains|all:
+      - 'pcwutl.dll'
+      - 'LaunchApplication'
+
+  condition: selection
+
+falsepositives:
+  - Legitimate Windows troubleshooting activity
+  - Authorized administrative testing
+  - Approved compatibility tooling
+
+level: medium
+
+tags:
+  - attack.t1218.011

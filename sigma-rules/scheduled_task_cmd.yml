@@ -1,0 +1,27 @@
+title: Scheduled Task Creation Executing Command Shell
+id: 51137278-5e31-4474-9d5e-93c427e3ab7e
+status: experimental
+
+description: Detects creation of a Windows scheduled task whose task content executes cmd.exe.
+
+logsource:
+  product: windows
+  service: security
+
+detection:
+  selection:
+    EventID: 4698
+    TaskContent|contains: 'cmd.exe'
+
+  condition: selection
+
+falsepositives:
+  - Legitimate administrative scheduled tasks
+  - Approved automation
+  - Software maintenance tasks
+
+level: medium
+
+tags:
+  - attack.persistence
+  - attack.t1053.005

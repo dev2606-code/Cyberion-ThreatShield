@@ -1,0 +1,27 @@
+title: PowerShell Execution Policy Changed to Unrestricted
+id: 710841cb-d917-4bf8-8d04-0b326085d322
+status: experimental
+
+description: Detects modification of the PowerShell ExecutionPolicy registry value to Unrestricted.
+
+logsource:
+  product: windows
+  category: registry_set
+
+detection:
+  selection:
+    TargetObject|endswith: '\Microsoft.PowerShell\ExecutionPolicy'
+    Details: 'Unrestricted'
+
+  condition: selection
+
+falsepositives:
+  - Authorized PowerShell configuration changes
+  - Administrative troubleshooting
+  - Approved development or testing environments
+
+level: medium
+
+tags:
+  - attack.execution
+  - attack.t1059.001

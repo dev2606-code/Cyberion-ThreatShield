@@ -1,0 +1,26 @@
+title: Process Spawned by Windows Remote Management Provider
+id: e820cd8a-429d-465f-b714-383c75ddeeba
+status: experimental
+
+description: Detects a process launched by wsmprovhost.exe, which can occur during Windows Remote Management or PowerShell Remoting activity.
+
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  selection:
+    ParentImage|endswith: '\wsmprovhost.exe'
+
+  condition: selection
+
+falsepositives:
+  - Legitimate PowerShell Remoting
+  - Authorized Windows Remote Management
+  - Administrative automation
+
+level: medium
+
+tags:
+  - attack.lateral-movement
+  - attack.t1021.006

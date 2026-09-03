@@ -1,0 +1,26 @@
+title: New Windows Service Executing Command Shell
+id: a38da096-a19a-4988-8666-7e29d7e197bb
+status: experimental
+
+description: Detects installation of a Windows service configured to execute cmd.exe.
+
+logsource:
+  product: windows
+  service: system
+
+detection:
+  selection:
+    EventID: 7045
+    ImagePath|contains: 'cmd.exe'
+
+  condition: selection
+
+falsepositives:
+  - Authorized administrative testing
+  - Legitimate service installation using command scripts
+  - Security lab activity
+
+level: high
+
+tags:
+  - attack.t1543.003

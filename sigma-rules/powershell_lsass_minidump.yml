@@ -1,0 +1,29 @@
+title: PowerShell LSASS MiniDumpWriteDump Activity
+id: f4f1d091-836a-40a0-9c7d-f4353cbf3e39
+status: experimental
+
+description: Detects PowerShell Script Block Logging events containing LSASS access and MiniDumpWriteDump-related logic.
+
+logsource:
+  product: windows
+  service: powershell
+
+detection:
+  selection:
+    EventID: 4104
+    ScriptBlockText|contains|all:
+      - 'Get-Process lsass'
+      - 'MiniDumpWriteDump'
+
+  condition: selection
+
+falsepositives:
+  - Authorized forensic memory acquisition
+  - Security testing in a lab environment
+  - Approved diagnostic tooling
+
+level: high
+
+tags:
+  - attack.credential-access
+  - attack.t1003.001

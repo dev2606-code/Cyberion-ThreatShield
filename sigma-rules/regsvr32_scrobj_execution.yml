@@ -1,0 +1,28 @@
+title: Regsvr32 Scrobj DLL Scriptlet Execution
+id: eba09de4-6a07-4136-bb7c-52dc3a1e396f
+status: experimental
+
+description: Detects regsvr32.exe using scrobj.dll with the /i parameter, which may indicate suspicious scriptlet execution.
+
+logsource:
+  product: windows
+  category: process_creation
+
+detection:
+  selection:
+    Image|endswith: '\regsvr32.exe'
+    CommandLine|contains|all:
+      - '/i:'
+      - 'scrobj.dll'
+
+  condition: selection
+
+falsepositives:
+  - Authorized administrative testing
+  - Legitimate software registration activity
+  - Security testing environments
+
+level: high
+
+tags:
+  - attack.t1218.010

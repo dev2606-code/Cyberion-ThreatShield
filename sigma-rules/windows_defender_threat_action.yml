@@ -1,0 +1,22 @@
+title: Windows Defender Threat Action Event
+id: 5592b47a-df59-444b-9cf8-62e0a647f145
+status: experimental
+
+description: Detects Windows Defender Event ID 1117 indicating an action taken on a detected threat.
+
+logsource:
+  product: windows
+  service: windefend
+
+detection:
+  selection:
+    EventID: 1117
+
+  condition: selection
+
+falsepositives:
+  - Security testing
+  - Antivirus validation exercises
+  - Authorized malware simulation
+
+level: high

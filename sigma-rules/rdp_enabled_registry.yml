@@ -1,0 +1,26 @@
+title: Remote Desktop Enabled via Registry
+id: 574a303f-c7f0-427c-b4de-5807217ec2ce
+status: experimental
+
+description: Detects modification of fDenyTSConnections to zero, which enables Remote Desktop connections.
+
+logsource:
+  product: windows
+  category: registry_set
+
+detection:
+  selection:
+    TargetObject|endswith: '\Control\Terminal Server\fDenyTSConnections'
+    Details: 'DWORD (0x00000000)'
+
+  condition: selection
+
+falsepositives:
+  - Authorized RDP configuration
+  - System administrator changes
+  - Approved remote support configuration
+
+level: medium
+
+tags:
+  - attack.t1021.001

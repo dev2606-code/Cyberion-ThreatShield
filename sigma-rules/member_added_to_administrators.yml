@@ -1,0 +1,27 @@
+title: Member Added to Local Administrators Group
+id: c6fd1800-f1fd-4d18-b7e6-26308a56ecfe
+status: experimental
+
+description: Detects a member being added to the built-in local Administrators group.
+
+logsource:
+  product: windows
+  service: security
+
+detection:
+  selection:
+    EventID: 4732
+    TargetUserName: 'Administrators'
+    TargetDomainName: 'Builtin'
+
+  condition: selection
+
+falsepositives:
+  - Authorized administrator account management
+  - Approved helpdesk activity
+  - Legitimate system administration
+
+level: high
+
+tags:
+  - attack.t1098

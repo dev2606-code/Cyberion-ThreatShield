@@ -1,0 +1,26 @@
+title: Winlogon Shell Registry Modification
+id: 485040d1-7909-4f29-881e-3a97b731fd83
+status: experimental
+
+description: Detects modification of the Windows Winlogon Shell registry value, which may be used for persistence.
+
+logsource:
+  product: windows
+  category: registry_set
+
+detection:
+  selection:
+    TargetObject|contains: '\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Shell'
+
+  condition: selection
+
+falsepositives:
+  - Legitimate system configuration
+  - Authorized administrative changes
+  - Approved software installation or customization
+
+level: high
+
+tags:
+  - attack.persistence
+  - attack.t1547.004

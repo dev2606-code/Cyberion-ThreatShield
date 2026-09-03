@@ -1,0 +1,28 @@
+title: IIS Worker Process Making RDP Connection
+id: c3343ce7-0ac4-4863-9235-454c56cfc801
+status: experimental
+
+description: Detects the IIS worker process w3wp.exe making a TCP network connection to destination port 3389.
+
+logsource:
+  product: windows
+  category: network_connection
+
+detection:
+  selection:
+    Image|endswith: '\w3wp.exe'
+    DestinationPort: 3389
+    Protocol: tcp
+
+  condition: selection
+
+falsepositives:
+  - Authorized IIS administrative activity
+  - Legitimate testing in a lab environment
+  - Approved internal automation
+
+level: high
+
+tags:
+  - attack.lateral-movement
+  - attack.t1021.001

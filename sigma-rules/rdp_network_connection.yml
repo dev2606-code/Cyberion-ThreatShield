@@ -1,0 +1,27 @@
+title: RDP Network Connection
+id: 3cfd0f33-834d-4f67-8d8d-073354a02f57
+status: experimental
+
+description: Detects Windows Sysmon network connections to destination port 3389, commonly associated with Remote Desktop Protocol.
+
+logsource:
+  product: windows
+  category: network_connection
+
+detection:
+  selection:
+    DestinationPort: 3389
+    Protocol: tcp
+
+  condition: selection
+
+falsepositives:
+  - Legitimate Remote Desktop administration
+  - Authorized remote support activity
+  - Internal IT management
+
+level: medium
+
+tags:
+  - attack.lateral-movement
+  - attack.t1021.001
