@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "name": "Suspicious Command Shell Spawned by FTP",
     "conditions": [
       ["ParentImage", "endswith", "\\ftp.exe"],
@@ -7,6 +8,46 @@
     ]
   },
   {
+    "id": 2,
+    "name": "Windows Failed Logon Attempt",
+    "conditions": [
+      ["EventID", "equals", "4625"]
+    ]
+  },
+  {
+    "id": 3,
+    "name": "RDP Network Connection",
+    "conditions": [
+      ["DestinationPort", "equals", "3389"],
+      ["Protocol", "equals", "tcp"]
+    ]
+  },
+  {
+    "id": 4,
+    "name": "SMB Network Connection",
+    "conditions": [
+      ["DestinationPort", "equals", "445"],
+      ["Protocol", "equals", "tcp"]
+    ]
+  },
+  {
+    "id": 5,
+    "name": "IIS Worker Process Making RDP Connection",
+    "conditions": [
+      ["Image", "endswith", "\\w3wp.exe"],
+      ["DestinationPort", "equals", "3389"],
+      ["Protocol", "equals", "tcp"]
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Process Spawned by Windows Remote Management Provider",
+    "conditions": [
+      ["ParentImage", "endswith", "\\wsmprovhost.exe"]
+    ]
+  },
+  {
+    "id": 13,
     "name": "MSHTA Execution of HTA File",
     "conditions": [
       ["Image", "endswith", "\\mshta.exe"],
@@ -14,6 +55,7 @@
     ]
   },
   {
+    "id": 15,
     "name": "Command Shell Spawned by WMI Provider",
     "conditions": [
       ["ParentImage", "endswith", "\\wmiprvse.exe"],
