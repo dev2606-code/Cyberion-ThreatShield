@@ -2,157 +2,937 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
-    <title>Cyberion ThreatShield</title>
+
+    <title>
+        Cyberion ThreatShield
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
 </head>
+
 
 <body>
 
-    <h1>Cyberion ThreatShield</h1>
 
-    <p>
-        Detection Engineering & Threat Hunting Dashboard
-    </p>
+<div class="app-shell">
 
-    <hr>
 
-    <h2>EVTX Threat Scanner</h2>
+    <aside class="sidebar">
 
-    <form
-        action="/upload"
-        method="POST"
-        enctype="multipart/form-data"
-    >
-        <input
-            type="file"
-            name="evtx_file"
-            accept=".evtx"
-            required
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                C
+            </div>
+
+            <div>
+
+                <h2>
+                    Cyberion
+                </h2>
+
+                <span>
+                    ThreatShield
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="nav-menu">
+
+
+            <a
+                class="nav-item active"
+                href="#"
+            >
+                Dashboard
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="#scanner"
+            >
+                Threat Scanner
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="#history"
+            >
+                Scan History
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="#alerts"
+            >
+                Alerts
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="#status"
+            >
+                System Status
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <p>
+                Detection Engine
+            </p>
+
+            <strong>
+                Online
+            </strong>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <main class="main-content">
+
+
+        <header class="topbar">
+
+
+            <div>
+
+                <p class="eyebrow">
+                    Security Operations Dashboard
+                </p>
+
+                <h1>
+                    Cyberion ThreatShield
+                </h1>
+
+                <p class="subtitle">
+                    EVTX Detection Engineering &
+                    Threat Hunting Platform
+                </p>
+
+            </div>
+
+
+            <div class="status-pill">
+
+                <span class="status-dot"></span>
+
+                Engine Active
+
+            </div>
+
+
+        </header>
+
+
+
+        <section
+            id="status"
+            class="stats-grid"
         >
 
-        <button type="submit">
-            Scan EVTX
-        </button>
-    </form>
 
-    {% if message %}
-        <p>
-            <strong>{{ message }}</strong>
-        </p>
-    {% endif %}
+            <div class="stat-card">
 
-    {% if error %}
-        <p>
-            <strong>Error: {{ error }}</strong>
-        </p>
-    {% endif %}
+                <span class="stat-label">
+                    Detection Rules
+                </span>
 
-    <hr>
+                <strong class="stat-value">
+                    {{ total_rules }}
+                </strong>
 
-    <h2>System Status</h2>
+                <span class="stat-caption">
+                    Sigma-inspired rules loaded
+                </span>
 
-    <p>
-        Detection Rules Loaded:
-        <strong>{{ total_rules }}</strong>
-    </p>
+            </div>
 
-    <p>EVTX Parser Ready</p>
-    <p>Detection Engine Ready</p>
 
-    {% if total_events is defined %}
 
-        <hr>
+            <div class="stat-card">
 
-        <h2>Scan Results</h2>
+                <span class="stat-label">
+                    Parser
+                </span>
 
-        <p>
-            File:
-            <strong>{{ filename }}</strong>
-        </p>
+                <strong class="stat-value small">
+                    Ready
+                </strong>
 
-        <p>
-            Events Scanned:
-            <strong>{{ total_events }}</strong>
-        </p>
+                <span class="stat-caption">
+                    Windows EVTX telemetry
+                </span>
 
-        <p>
-            Alerts Found:
-            <strong>{{ total_alerts }}</strong>
-        </p>
+            </div>
 
-        {% if alerts %}
 
-            <h2>Detected Threats</h2>
 
-            {% for alert in alerts %}
+            <div class="stat-card">
 
-                <hr>
+                <span class="stat-label">
+                    Detection Engine
+                </span>
 
-                <h3>
-                    Rule {{ alert.rule_id }}:
-                    {{ alert.rule_name }}
-                </h3>
+                <strong class="stat-value small">
+                    Online
+                </strong>
 
-                <p>
-                    Severity:
-                    <strong>{{ alert.severity|upper }}</strong>
-                </p>
+                <span class="stat-caption">
+                    Automated rule matching
+                </span>
 
-                <p>
-                    MITRE ATT&CK:
-                    <strong>{{ alert.mitre_attack }}</strong>
-                </p>
+            </div>
 
-                <p>
-                    Event ID:
-                    {{ alert.event.EventID }}
-                </p>
 
-                <p>
-                    Computer:
-                    {{ alert.event.Computer }}
-                </p>
 
-                <p>
-                    Time:
-                    {{ alert.event.TimeCreated }}
-                </p>
+            <div class="stat-card">
 
-                {% if alert.event.User %}
-                    <p>User: {{ alert.event.User }}</p>
-                {% endif %}
+                <span class="stat-label">
+                    Latest Alerts
+                </span>
 
-                {% if alert.event.Image %}
-                    <p>Image: {{ alert.event.Image }}</p>
-                {% endif %}
+                <strong class="stat-value">
 
-                {% if alert.event.CommandLine %}
-                    <p>
-                        Command:
-                        {{ alert.event.CommandLine }}
+                    {{
+                        total_alerts
+                        if total_alerts is defined
+                        else 0
+                    }}
+
+                </strong>
+
+                <span class="stat-caption">
+                    Current scan results
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <section
+            id="scanner"
+            class="panel scanner-panel"
+        >
+
+
+            <div class="panel-header">
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Threat Scanner
                     </p>
-                {% endif %}
 
-                {% if alert.event.ParentImage %}
-                    <p>
-                        Parent:
-                        {{ alert.event.ParentImage }}
+                    <h2>
+                        Scan Windows EVTX
+                    </h2>
+
+                </div>
+
+
+                <span class="panel-badge">
+                    20-rule engine
+                </span>
+
+
+            </div>
+
+
+
+            <form
+                action="/upload"
+                method="POST"
+                enctype="multipart/form-data"
+                class="upload-form"
+            >
+
+
+                <label
+                    class="file-drop"
+                    for="evtx_file"
+                >
+
+
+                    <span class="upload-icon">
+                        ↑
+                    </span>
+
+
+                    <span class="upload-title">
+                        Select an EVTX file
+                    </span>
+
+
+                    <span class="upload-subtitle">
+                        Windows Event Log files only
+                    </span>
+
+
+                    <input
+                        id="evtx_file"
+                        type="file"
+                        name="evtx_file"
+                        accept=".evtx"
+                        required
+                    >
+
+
+                </label>
+
+
+
+                <button
+                    class="scan-button"
+                    type="submit"
+                >
+
+                    Scan EVTX
+
+                </button>
+
+
+            </form>
+
+
+
+            {% if message %}
+
+            <div class="message success">
+
+                {{ message }}
+
+            </div>
+
+            {% endif %}
+
+
+
+            {% if error %}
+
+            <div class="message error">
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+
+        </section>
+
+
+
+        {% if total_events is defined %}
+
+
+        <section class="panel">
+
+
+            <div class="panel-header">
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Scan Summary
                     </p>
-                {% endif %}
 
-            {% endfor %}
+                    <h2>
+                        Analysis Results
+                    </h2>
 
-        {% else %}
+                </div>
 
-            <p>No detection matches found.</p>
+
+            </div>
+
+
+
+            <div class="scan-summary">
+
+
+                <div class="summary-item">
+
+                    <span>
+                        File
+                    </span>
+
+                    <strong>
+                        {{ filename }}
+                    </strong>
+
+                </div>
+
+
+
+                <div class="summary-item">
+
+                    <span>
+                        Events Scanned
+                    </span>
+
+                    <strong>
+                        {{ total_events }}
+                    </strong>
+
+                </div>
+
+
+
+                <div class="summary-item">
+
+                    <span>
+                        Alerts Found
+                    </span>
+
+                    <strong>
+                        {{ total_alerts }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+
+            {% if reports_ready %}
+
+
+            <div class="report-actions">
+
+
+                <a
+                    class="report-button"
+                    href="/download/json"
+                >
+
+                    Download JSON Report
+
+                </a>
+
+
+                <a
+                    class="report-button secondary"
+                    href="/download/csv"
+                >
+
+                    Download CSV Report
+
+                </a>
+
+
+            </div>
+
+
+            {% endif %}
+
+
+        </section>
+
 
         {% endif %}
 
-    {% endif %}
+
+
+        <section
+            id="history"
+            class="panel"
+        >
+
+
+            <div class="panel-header">
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Scan History
+                    </p>
+
+                    <h2>
+                        Recent Scans
+                    </h2>
+
+                </div>
+
+
+            </div>
+
+
+
+            {% if scan_history %}
+
+
+            <div class="history-list">
+
+
+                {% for scan in scan_history %}
+
+
+                <div class="history-item">
+
+
+                    <div>
+
+                        <strong>
+                            {{ scan.filename }}
+                        </strong>
+
+                        <span>
+                            {{ scan.timestamp }}
+                        </span>
+
+                    </div>
+
+
+
+                    <div>
+
+                        <span>
+                            Events:
+                            {{ scan.total_events }}
+                        </span>
+
+                        <span>
+                            Alerts:
+                            {{ scan.total_alerts }}
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+            {% else %}
+
+
+            <p class="muted-text">
+
+                No scan history yet.
+
+            </p>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+
+        {% if total_events is defined %}
+
+
+        <section
+            id="alerts"
+            class="panel"
+        >
+
+
+            <div class="panel-header">
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Detection Results
+                    </p>
+
+                    <h2>
+                        Detected Threats
+                    </h2>
+
+                </div>
+
+
+
+                {% if total_alerts > 0 %}
+
+
+                <span class="danger-badge">
+
+                    {{ total_alerts }}
+                    alert(s)
+
+                </span>
+
+
+                {% else %}
+
+
+                <span class="safe-badge">
+
+                    No alerts
+
+                </span>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+
+            {% if alerts %}
+
+
+            <div class="alert-controls">
+
+
+                <input
+                    id="alertSearch"
+                    type="text"
+                    placeholder="Search alerts..."
+                >
+
+
+                <select id="severityFilter">
+
+
+                    <option value="all">
+
+                        All Severities
+
+                    </option>
+
+
+                    <option value="high">
+                        High
+                    </option>
+
+
+                    <option value="medium">
+                        Medium
+                    </option>
+
+
+                    <option value="low">
+                        Low
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+
+            <div class="alerts-list">
+
+
+                {% for alert in alerts %}
+
+
+                <article
+                    class="alert-card"
+
+                    data-severity="{{ alert.severity|lower }}"
+
+                    data-search="
+                        {{ alert.rule_name|lower }}
+                        {{ alert.mitre_attack|lower }}
+                    "
+                >
+
+
+                    <div class="alert-top">
+
+
+                        <div>
+
+
+                            <p class="rule-id">
+
+                                Rule
+                                {{ alert.rule_id }}
+
+                            </p>
+
+
+                            <h3>
+
+                                {{ alert.rule_name }}
+
+                            </h3>
+
+
+                        </div>
+
+
+
+                        <div class="badges">
+
+
+                            <span
+                                class="
+                                    severity
+                                    severity-{{ alert.severity|lower }}
+                                "
+                            >
+
+                                {{ alert.severity|upper }}
+
+                            </span>
+
+
+
+                            <span class="mitre-badge">
+
+                                {{ alert.mitre_attack }}
+
+                            </span>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="event-grid">
+
+
+                        <div>
+
+                            <span>
+                                Event ID
+                            </span>
+
+                            <strong>
+                                {{ alert.event.EventID }}
+                            </strong>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <span>
+                                Computer
+                            </span>
+
+                            <strong>
+                                {{ alert.event.Computer }}
+                            </strong>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <span>
+                                Time
+                            </span>
+
+                            <strong>
+                                {{ alert.event.TimeCreated }}
+                            </strong>
+
+                        </div>
+
+
+
+                        {% if alert.event.User %}
+
+
+                        <div>
+
+                            <span>
+                                User
+                            </span>
+
+                            <strong>
+                                {{ alert.event.User }}
+                            </strong>
+
+                        </div>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+
+                    {% if alert.event.Image %}
+
+
+                    <div class="detail-row">
+
+                        <span>
+                            Image
+                        </span>
+
+                        <code>
+
+                            {{ alert.event.Image }}
+
+                        </code>
+
+                    </div>
+
+
+                    {% endif %}
+
+
+
+                    {% if alert.event.CommandLine %}
+
+
+                    <div class="detail-row">
+
+                        <span>
+                            Command Line
+                        </span>
+
+                        <code>
+
+                            {{ alert.event.CommandLine }}
+
+                        </code>
+
+                    </div>
+
+
+                    {% endif %}
+
+
+
+                    {% if alert.event.ParentImage %}
+
+
+                    <div class="detail-row">
+
+                        <span>
+                            Parent Process
+                        </span>
+
+                        <code>
+
+                            {{ alert.event.ParentImage }}
+
+                        </code>
+
+                    </div>
+
+
+                    {% endif %}
+
+
+                </article>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+
+            {% else %}
+
+
+            <div class="no-alerts">
+
+
+                <div class="safe-icon">
+
+                    ✓
+
+                </div>
+
+
+                <h3>
+
+                    No detection matches found
+
+                </h3>
+
+
+                <p>
+
+                    The uploaded EVTX sample did not
+                    trigger any configured detection rules.
+
+                </p>
+
+
+            </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+        {% endif %}
+
+
+
+        <footer class="footer">
+
+            Cyberion ThreatShield
+            • Detection Engineering Platform
+
+        </footer>
+
+
+    </main>
+
+
+</div>
+
+
+<script
+    src="{{ url_for('static', filename='js/app.js') }}"
+></script>
+
 
 </body>
 
