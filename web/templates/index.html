@@ -7,7 +7,6 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
-
     <title>Cyberion ThreatShield</title>
 </head>
 
@@ -28,7 +27,6 @@
         method="POST"
         enctype="multipart/form-data"
     >
-
         <input
             type="file"
             name="evtx_file"
@@ -37,9 +35,8 @@
         >
 
         <button type="submit">
-            Upload EVTX
+            Scan EVTX
         </button>
-
     </form>
 
     {% if message %}
@@ -48,13 +45,114 @@
         </p>
     {% endif %}
 
+    {% if error %}
+        <p>
+            <strong>Error: {{ error }}</strong>
+        </p>
+    {% endif %}
+
     <hr>
 
     <h2>System Status</h2>
 
-    <p>20 Detection Rules Loaded</p>
+    <p>
+        Detection Rules Loaded:
+        <strong>{{ total_rules }}</strong>
+    </p>
+
     <p>EVTX Parser Ready</p>
     <p>Detection Engine Ready</p>
+
+    {% if total_events is defined %}
+
+        <hr>
+
+        <h2>Scan Results</h2>
+
+        <p>
+            File:
+            <strong>{{ filename }}</strong>
+        </p>
+
+        <p>
+            Events Scanned:
+            <strong>{{ total_events }}</strong>
+        </p>
+
+        <p>
+            Alerts Found:
+            <strong>{{ total_alerts }}</strong>
+        </p>
+
+        {% if alerts %}
+
+            <h2>Detected Threats</h2>
+
+            {% for alert in alerts %}
+
+                <hr>
+
+                <h3>
+                    Rule {{ alert.rule_id }}:
+                    {{ alert.rule_name }}
+                </h3>
+
+                <p>
+                    Severity:
+                    <strong>{{ alert.severity|upper }}</strong>
+                </p>
+
+                <p>
+                    MITRE ATT&CK:
+                    <strong>{{ alert.mitre_attack }}</strong>
+                </p>
+
+                <p>
+                    Event ID:
+                    {{ alert.event.EventID }}
+                </p>
+
+                <p>
+                    Computer:
+                    {{ alert.event.Computer }}
+                </p>
+
+                <p>
+                    Time:
+                    {{ alert.event.TimeCreated }}
+                </p>
+
+                {% if alert.event.User %}
+                    <p>User: {{ alert.event.User }}</p>
+                {% endif %}
+
+                {% if alert.event.Image %}
+                    <p>Image: {{ alert.event.Image }}</p>
+                {% endif %}
+
+                {% if alert.event.CommandLine %}
+                    <p>
+                        Command:
+                        {{ alert.event.CommandLine }}
+                    </p>
+                {% endif %}
+
+                {% if alert.event.ParentImage %}
+                    <p>
+                        Parent:
+                        {{ alert.event.ParentImage }}
+                    </p>
+                {% endif %}
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No detection matches found.</p>
+
+        {% endif %}
+
+    {% endif %}
 
 </body>
 

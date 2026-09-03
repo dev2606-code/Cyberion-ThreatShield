@@ -1,18 +1,32 @@
+import json
 import os
+import sys
 
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 
 
-app = Flask(__name__)
-
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
 
-UPLOAD_FOLDER = os.path.join(
+SRC_DIR = os.path.join(BASE_DIR, "src")
+
+if SRC_DIR not in sys.path:
+    sys.path.insert(0, SRC_DIR)
+
+from evtx_parser import parse_evtx
+from detection_engine import run_detection
+
+
+app = Flask(__name__)
+
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+
+RULES_FILE = os.path.join(
     BASE_DIR,
-    "uploads"
+    "config",
+    "detection_rules.json"
 )
 
 os.makedirs(
@@ -24,24 +38,53 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
 
 
+def load_rules():
+    with open(
+        RULES_FILE,
+        "r",
+        encoding="utf-8"
+    ) as file:
+        return json.load(file)
+
+
 @app.route("/")
 def home():
-    return render_template("index.html")
+
+    rules = load_rules()
+
+    return render_template(
+        "index.html",
+        total_rules=len(rules)
+    )
 
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
 
+    rules = load_rules()
+
     if "evtx_file" not in request.files:
-        return "No file field received", 400
+        return render_template(
+            "index.html",
+            error="No file field received.",
+            total_rules=len(rules)
+        )
 
     file = request.files["evtx_file"]
 
     if not file or file.filename == "":
-        return "No file selected", 400
+        return render_template(
+            "index.html",
+            error="No EVTX file selected.",
+            total_rules=len(rules)
+        )
 
     if not file.filename.lower().endswith(".evtx"):
-        return "Only .evtx files are allowed", 400
+        return render_template(
+            "index.html",
+            error="Only .evtx files are allowed.",
+            total_rules=len(rules)
+        )
 
     filename = secure_filename(file.filename)
 
@@ -52,10 +95,30 @@ def upload_file():
 
     file.save(save_path)
 
-    return render_template(
-        "index.html",
-        message=f"{filename} uploaded successfully!"
-    )
+    try:
+        events = parse_evtx(save_path)
+
+        alerts = run_detection(
+            events,
+            rules
+        )
+
+        return render_template(
+            "index.html",
+            message=f"{filename} scanned successfully.",
+            filename=filename,
+            total_events=len(events),
+            total_rules=len(rules),
+            total_alerts=len(alerts),
+            alerts=alerts
+        )
+
+    except Exception as error:
+        return render_template(
+            "index.html",
+            error=f"Scan failed: {error}",
+            total_rules=len(rules)
+        )
 
 
 if __name__ == "__main__":
