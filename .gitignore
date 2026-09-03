@@ -25,3 +25,6 @@ uploads/
 
 # Local backups
 *.backup
+
+# Runtime scan history
+data/scan_history.json
