@@ -1,3 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
 venv/
-datasets/
+.venv/
+
+# Temporary parsed event files
+*_events.json
+rule*.json
+
+# Generated alert reports
+reports/alerts_*.json
+reports/alerts_*.csv
+
+# macOS
 .DS_Store
