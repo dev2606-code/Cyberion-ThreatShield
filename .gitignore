@@ -15,4 +15,4 @@ reports/alerts_*.json
 reports/alerts_*.csv
 
 # macOS
-.DS_Store
+.DS_Storedatasets/
