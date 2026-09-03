@@ -213,3 +213,49 @@ This telemetry can be used to hunt for patterns such as one system connecting to
 A single network connection does not indicate Network Service Discovery.
 
 Multiple connection attempts, destination hosts, ports, timing, process information, and environmental context should be analyzed before classifying activity as suspicious.
+---
+
+## Rule 5: IIS Worker Process Making RDP Connection
+
+**Rule File:** iis_rdp_connection.yml
+**MITRE ATT&CK:** T1021.001 - Remote Desktop Protocol
+**Log Source:** Windows Sysmon Network Connection
+**Sample:** tunna_iis_rdp_smb_tunneling_sysmon_3.evtx
+
+### Detection Logic
+
+Image ends with w3wp.exe
+
+AND
+
+Protocol = tcp
+
+AND
+
+DestinationPort = 3389
+
+### Evidence Observed
+
+Image = C:\Windows\System32\inetsrv\w3wp.exe
+
+Protocol = tcp
+
+DestinationIp = 127.0.0.1
+
+DestinationPort = 3389
+
+User = IIS APPPOOL\DefaultAppPool
+
+### Test Result
+
+MATCHED
+
+The required process and network fields were observed in the sample telemetry.
+
+### False Positive Consideration
+
+Authorized IIS administration, testing, or approved internal automation could potentially generate similar activity.
+
+### Note
+
+The match is an investigation signal and does not by itself prove malicious RDP activity.

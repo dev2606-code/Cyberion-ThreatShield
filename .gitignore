@@ -19,3 +19,6 @@ reports/alerts_*.csv
 
 # Local EVTX datasets
 datasets/
+
+# Web uploaded EVTX files
+uploads/
