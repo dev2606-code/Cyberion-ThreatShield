@@ -16,3 +16,6 @@ reports/alerts_*.csv
 
 # macOS
 .DS_Storedatasets/
+
+# Local EVTX datasets
+datasets/
