@@ -9,9 +9,12 @@ from flask import (
     request,
     send_file
 )
-
 from werkzeug.utils import secure_filename
 
+
+# --------------------------------------------------
+# PROJECT PATHS
+# --------------------------------------------------
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
@@ -35,6 +38,10 @@ from detection_engine import (
 )
 
 
+# --------------------------------------------------
+# FLASK APP
+# --------------------------------------------------
+
 app = Flask(__name__)
 
 
@@ -43,15 +50,25 @@ UPLOAD_FOLDER = os.path.join(
     "uploads"
 )
 
+REPORTS_FOLDER = os.path.join(
+    BASE_DIR,
+    "reports"
+)
+
+DATA_FOLDER = os.path.join(
+    BASE_DIR,
+    "data"
+)
+
+HISTORY_FILE = os.path.join(
+    DATA_FOLDER,
+    "scan_history.json"
+)
+
 RULES_FILE = os.path.join(
     BASE_DIR,
     "config",
     "detection_rules.json"
-)
-
-REPORTS_FOLDER = os.path.join(
-    BASE_DIR,
-    "reports"
 )
 
 
@@ -65,6 +82,11 @@ os.makedirs(
     exist_ok=True
 )
 
+os.makedirs(
+    DATA_FOLDER,
+    exist_ok=True
+)
+
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
@@ -73,15 +95,19 @@ app.config["MAX_CONTENT_LENGTH"] = (
 )
 
 
+# --------------------------------------------------
+# LATEST GENERATED REPORTS
+# --------------------------------------------------
+
 latest_reports = {
     "json": None,
     "csv": None
 }
 
 
-# Latest 10 scans
-scan_history = []
-
+# --------------------------------------------------
+# DETECTION RULES
+# --------------------------------------------------
 
 def load_rules():
 
@@ -94,6 +120,62 @@ def load_rules():
         return json.load(file)
 
 
+# --------------------------------------------------
+# SCAN HISTORY
+# --------------------------------------------------
+
+def load_scan_history():
+
+    if not os.path.exists(HISTORY_FILE):
+
+        return []
+
+    try:
+
+        with open(
+            HISTORY_FILE,
+            "r",
+            encoding="utf-8"
+        ) as file:
+
+            history = json.load(file)
+
+        if not isinstance(history, list):
+            return []
+
+        return history[:10]
+
+    except (
+        json.JSONDecodeError,
+        OSError
+    ):
+
+        return []
+
+
+def save_scan_history(history):
+
+    with open(
+        HISTORY_FILE,
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(
+            history[:10],
+            file,
+            indent=4,
+            ensure_ascii=False
+        )
+
+
+scan_history = load_scan_history()
+
+
+# --------------------------------------------------
+# HOME PAGE
+# --------------------------------------------------
+
 @app.route("/")
 def home():
 
@@ -105,6 +187,10 @@ def home():
         scan_history=scan_history
     )
 
+
+# --------------------------------------------------
+# EVTX UPLOAD + SCAN
+# --------------------------------------------------
 
 @app.route(
     "/upload",
@@ -167,42 +253,55 @@ def upload_file():
 
     try:
 
-        # Parse EVTX
+        # ------------------------------------------
+        # PARSE EVTX
+        # ------------------------------------------
+
         events = parse_evtx(
             save_path
         )
 
 
-        # Run detection engine
+        # ------------------------------------------
+        # RUN DETECTION ENGINE
+        # ------------------------------------------
+
         alerts = run_detection(
             events,
             rules
         )
 
 
-        # Report timestamp
-        timestamp = (
-            datetime.now()
-            .astimezone()
-            .strftime(
-                "%Y%m%d_%H%M%S"
-            )
+        # ------------------------------------------
+        # TIMESTAMP
+        # ------------------------------------------
+
+        now = datetime.now().astimezone()
+
+        report_timestamp = now.strftime(
+            "%Y%m%d_%H%M%S"
+        )
+
+        display_timestamp = now.strftime(
+            "%Y-%m-%d %H:%M:%S"
         )
 
 
-        # Export JSON report
+        # ------------------------------------------
+        # GENERATE REPORTS
+        # ------------------------------------------
+
         json_report = export_json_report(
             alerts,
             filename,
             RULES_FILE,
-            timestamp
+            report_timestamp
         )
 
 
-        # Export CSV report
         csv_report = export_csv_report(
             alerts,
-            timestamp
+            report_timestamp
         )
 
 
@@ -219,8 +318,12 @@ def upload_file():
         )
 
 
-        # Add scan history
+        # ------------------------------------------
+        # SAVE SCAN HISTORY
+        # ------------------------------------------
+
         scan_entry = {
+
             "filename": filename,
 
             "total_events":
@@ -230,11 +333,7 @@ def upload_file():
                 len(alerts),
 
             "timestamp":
-                datetime.now()
-                .astimezone()
-                .strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+                display_timestamp
         }
 
 
@@ -244,10 +343,18 @@ def upload_file():
         )
 
 
-        # Keep only latest 10
-        if len(scan_history) > 10:
-            scan_history.pop()
+        # Keep latest 10 scans only
+        del scan_history[10:]
 
+
+        save_scan_history(
+            scan_history
+        )
+
+
+        # ------------------------------------------
+        # RENDER RESULTS
+        # ------------------------------------------
 
         return render_template(
             "index.html",
@@ -289,6 +396,10 @@ def upload_file():
         )
 
 
+# --------------------------------------------------
+# DOWNLOAD JSON REPORT
+# --------------------------------------------------
+
 @app.route("/download/json")
 def download_json():
 
@@ -296,25 +407,34 @@ def download_json():
         "json"
     )
 
+
     if not report:
+
         return (
             "No JSON report available.",
             404
         )
 
+
     if not os.path.exists(
         report
     ):
+
         return (
             "JSON report not found.",
             404
         )
+
 
     return send_file(
         report,
         as_attachment=True
     )
 
+
+# --------------------------------------------------
+# DOWNLOAD CSV REPORT
+# --------------------------------------------------
 
 @app.route("/download/csv")
 def download_csv():
@@ -323,25 +443,34 @@ def download_csv():
         "csv"
     )
 
+
     if not report:
+
         return (
             "No CSV report available.",
             404
         )
 
+
     if not os.path.exists(
         report
     ):
+
         return (
             "CSV report not found.",
             404
         )
+
 
     return send_file(
         report,
         as_attachment=True
     )
 
+
+# --------------------------------------------------
+# START SERVER
+# --------------------------------------------------
 
 if __name__ == "__main__":
 

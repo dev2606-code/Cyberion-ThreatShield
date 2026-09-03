@@ -22,3 +22,6 @@ datasets/
 
 # Web uploaded EVTX files
 uploads/
+
+# Local backups
+*.backup
