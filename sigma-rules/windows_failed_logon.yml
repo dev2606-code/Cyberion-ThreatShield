@@ -1,0 +1,26 @@
+title: Windows Failed Logon Attempt
+id: 32e43209-fbd0-4120-b13d-934165fbf545
+status: experimental
+
+description: Detects Windows Security Event ID 4625, which represents a failed logon attempt.
+
+logsource:
+  product: windows
+  service: security
+
+detection:
+  selection:
+    EventID: 4625
+
+  condition: selection
+
+falsepositives:
+  - Incorrect password entered by a legitimate user
+  - Expired credentials
+  - Legitimate application or service authentication failure
+
+level: low
+
+tags:
+  - attack.credential-access
+  - attack.t1110
