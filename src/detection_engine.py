@@ -3,80 +3,202 @@ import sys
 
 
 def load_json(file_path):
+    """
+    Load JSON data from a file.
+    """
     with open(file_path, "r") as f:
         return json.load(f)
 
 
 def normalize(value):
-    return (value or "").lower()
+    """
+    Convert values to lowercase strings for case-insensitive comparison.
+    """
+    if value is None:
+        return ""
+
+    return str(value).lower()
 
 
 def check_condition(event, field, operator, expected):
+    """
+    Check one detection condition against an event.
+    """
+
     actual = event.get(field)
 
+    # Example:
+    # Image endswith \cmd.exe
     if operator == "endswith":
         return normalize(actual).endswith(normalize(expected))
 
+    # Example:
+    # CommandLine contains .hta
     if operator == "contains":
         return normalize(expected) in normalize(actual)
 
+    # Example:
+    # EventID equals 4625
     if operator == "equals":
         return normalize(actual) == normalize(expected)
+
+    # Example:
+    # ScriptBlockText must contain BOTH:
+    # Get-Process lsass
+    # MiniDumpWriteDump
+    if operator == "contains_all":
+        actual_normalized = normalize(actual)
+
+        return all(
+            normalize(item) in actual_normalized
+            for item in expected
+        )
 
     return False
 
 
 def rule_matches(event, rule):
+    """
+    Return True only when ALL conditions in a rule match.
+    """
+
     for field, operator, expected in rule["conditions"]:
-        if not check_condition(event, field, operator, expected):
+
+        if not check_condition(
+            event,
+            field,
+            operator,
+            expected
+        ):
             return False
 
     return True
 
 
 def run_detection(events, rules):
+    """
+    Run all detection rules against all events.
+    """
+
     alerts = []
 
     for event in events:
+
         for rule in rules:
+
             if rule_matches(event, rule):
-                alerts.append({
-                    "rule": rule["name"],
-                    "event": event
-                })
+
+                alerts.append(
+                    {
+                        "rule_id": rule.get("id"),
+                        "rule": rule["name"],
+                        "event": event
+                    }
+                )
 
     return alerts
 
 
+def print_alert(alert):
+    """
+    Display one alert in readable format.
+    """
+
+    event = alert["event"]
+
+    print("=" * 70)
+
+    print(
+        f"ALERT [Rule {alert.get('rule_id')}]: "
+        f"{alert['rule']}"
+    )
+
+    print("EventID:", event.get("EventID"))
+    print("Computer:", event.get("Computer"))
+    print("Time:", event.get("TimeCreated"))
+
+    important_fields = [
+        "User",
+        "TargetUserName",
+        "Image",
+        "CommandLine",
+        "ParentImage",
+        "ParentCommandLine",
+        "Protocol",
+        "SourceIp",
+        "SourcePort",
+        "DestinationIp",
+        "DestinationPort",
+        "TaskName",
+        "TaskContent",
+        "TargetObject",
+        "Details",
+        "ScriptBlockText"
+    ]
+
+    for field in important_fields:
+
+        value = event.get(field)
+
+        if value:
+            print(f"{field}: {value}")
+
+
 if __name__ == "__main__":
+
     if len(sys.argv) != 3:
+
         print("Usage:")
         print(
             "python src/detection_engine.py "
-            "<events.json> <rules.json>"
+            "<events.json> "
+            "<rules.json>"
         )
+
         sys.exit(1)
 
     events_file = sys.argv[1]
     rules_file = sys.argv[2]
 
-    events = load_json(events_file)
-    rules = load_json(rules_file)
+    try:
 
-    alerts = run_detection(events, rules)
+        events = load_json(events_file)
+        rules = load_json(rules_file)
+
+    except FileNotFoundError as error:
+
+        print("File not found:")
+        print(error)
+
+        sys.exit(1)
+
+    except json.JSONDecodeError as error:
+
+        print("Invalid JSON:")
+        print(error)
+
+        sys.exit(1)
+
+    alerts = run_detection(
+        events,
+        rules
+    )
+
+    print()
+    print("Cyberion ThreatShield")
+    print("Automated Detection Engine")
+    print("-" * 40)
 
     print(f"Total Events: {len(events)}")
     print(f"Total Rules: {len(rules)}")
     print(f"Total Alerts: {len(alerts)}")
 
-    for alert in alerts:
-        event = alert["event"]
+    if len(alerts) == 0:
 
-        print("=" * 60)
-        print("ALERT:", alert["rule"])
-        print("Computer:", event.get("Computer"))
-        print("Time:", event.get("TimeCreated"))
-        print("User:", event.get("User"))
-        print("Image:", event.get("Image"))
-        print("CommandLine:", event.get("CommandLine"))
-        print("ParentImage:", event.get("ParentImage"))
+        print()
+        print("No detection matches found.")
+
+    else:
+
+        for alert in alerts:
+            print_alert(alert)

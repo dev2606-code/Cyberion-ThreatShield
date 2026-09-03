@@ -1,65 +1,219 @@
 [
-  {
-    "id": 1,
-    "name": "Suspicious Command Shell Spawned by FTP",
-    "conditions": [
-      ["ParentImage", "endswith", "\\ftp.exe"],
-      ["Image", "endswith", "\\cmd.exe"]
-    ]
-  },
-  {
-    "id": 2,
-    "name": "Windows Failed Logon Attempt",
-    "conditions": [
-      ["EventID", "equals", "4625"]
-    ]
-  },
-  {
-    "id": 3,
-    "name": "RDP Network Connection",
-    "conditions": [
-      ["DestinationPort", "equals", "3389"],
-      ["Protocol", "equals", "tcp"]
-    ]
-  },
-  {
-    "id": 4,
-    "name": "SMB Network Connection",
-    "conditions": [
-      ["DestinationPort", "equals", "445"],
-      ["Protocol", "equals", "tcp"]
-    ]
-  },
-  {
-    "id": 5,
-    "name": "IIS Worker Process Making RDP Connection",
-    "conditions": [
-      ["Image", "endswith", "\\w3wp.exe"],
-      ["DestinationPort", "equals", "3389"],
-      ["Protocol", "equals", "tcp"]
-    ]
-  },
-  {
-    "id": 6,
-    "name": "Process Spawned by Windows Remote Management Provider",
-    "conditions": [
-      ["ParentImage", "endswith", "\\wsmprovhost.exe"]
-    ]
-  },
-  {
-    "id": 13,
-    "name": "MSHTA Execution of HTA File",
-    "conditions": [
-      ["Image", "endswith", "\\mshta.exe"],
-      ["CommandLine", "contains", ".hta"]
-    ]
-  },
-  {
-    "id": 15,
-    "name": "Command Shell Spawned by WMI Provider",
-    "conditions": [
-      ["ParentImage", "endswith", "\\wmiprvse.exe"],
-      ["Image", "endswith", "\\cmd.exe"]
-    ]
-  }
+    {
+        "id": 1,
+        "name": "Suspicious Command Shell Spawned by FTP",
+        "conditions": [
+            [
+                "ParentImage",
+                "endswith",
+                "\\ftp.exe"
+            ],
+            [
+                "Image",
+                "endswith",
+                "\\cmd.exe"
+            ]
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Windows Failed Logon Attempt",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4625"
+            ]
+        ]
+    },
+    {
+        "id": 3,
+        "name": "RDP Network Connection",
+        "conditions": [
+            [
+                "DestinationPort",
+                "equals",
+                "3389"
+            ],
+            [
+                "Protocol",
+                "equals",
+                "tcp"
+            ]
+        ]
+    },
+    {
+        "id": 4,
+        "name": "SMB Network Connection",
+        "conditions": [
+            [
+                "DestinationPort",
+                "equals",
+                "445"
+            ],
+            [
+                "Protocol",
+                "equals",
+                "tcp"
+            ]
+        ]
+    },
+    {
+        "id": 5,
+        "name": "IIS Worker Process Making RDP Connection",
+        "conditions": [
+            [
+                "Image",
+                "endswith",
+                "\\w3wp.exe"
+            ],
+            [
+                "DestinationPort",
+                "equals",
+                "3389"
+            ],
+            [
+                "Protocol",
+                "equals",
+                "tcp"
+            ]
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Process Spawned by Windows Remote Management Provider",
+        "conditions": [
+            [
+                "ParentImage",
+                "endswith",
+                "\\wsmprovhost.exe"
+            ]
+        ]
+    },
+    {
+        "id": 7,
+        "name": "PowerShell Script Block With Base64 Decoding",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4104"
+            ],
+            [
+                "ScriptBlockText",
+                "contains",
+                "FromBase64String"
+            ]
+        ]
+    },
+    {
+        "id": 8,
+        "name": "PowerShell Credential Access via GetNetworkCredential",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4104"
+            ],
+            [
+                "ScriptBlockText",
+                "contains",
+                "GetNetworkCredential"
+            ]
+        ]
+    },
+    {
+        "id": 9,
+        "name": "PowerShell LSASS MiniDumpWriteDump Activity",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4104"
+            ],
+            [
+                "ScriptBlockText",
+                "contains_all",
+                [
+                    "Get-Process lsass",
+                    "MiniDumpWriteDump"
+                ]
+            ]
+        ]
+    },
+    {
+        "id": 10,
+        "name": "Scheduled Task Creation Executing Command Shell",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4698"
+            ],
+            [
+                "TaskContent",
+                "contains",
+                "cmd.exe"
+            ]
+        ]
+    },
+    {
+        "id": 11,
+        "name": "Winlogon Shell Registry Modification",
+        "conditions": [
+            [
+                "TargetObject",
+                "contains",
+                "\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Shell"
+            ]
+        ]
+    },
+    {
+        "id": 12,
+        "name": "PowerShell Execution Policy Changed to Unrestricted",
+        "conditions": [
+            [
+                "TargetObject",
+                "endswith",
+                "\\Microsoft.PowerShell\\ExecutionPolicy"
+            ],
+            [
+                "Details",
+                "equals",
+                "Unrestricted"
+            ]
+        ]
+    },
+    {
+        "id": 13,
+        "name": "MSHTA Execution of HTA File",
+        "conditions": [
+            [
+                "Image",
+                "endswith",
+                "\\mshta.exe"
+            ],
+            [
+                "CommandLine",
+                "contains",
+                ".hta"
+            ]
+        ]
+    },
+    {
+        "id": 15,
+        "name": "Command Shell Spawned by WMI Provider",
+        "conditions": [
+            [
+                "ParentImage",
+                "endswith",
+                "\\wmiprvse.exe"
+            ],
+            [
+                "Image",
+                "endswith",
+                "\\cmd.exe"
+            ]
+        ]
+    }
 ]
