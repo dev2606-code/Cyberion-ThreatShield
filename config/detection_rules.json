@@ -201,6 +201,20 @@
         ]
     },
     {
+  "id": 14,
+  "name": "Rundll32 PCWUTL LaunchApplication Execution",
+  "severity": "medium",
+  "mitre_attack": "T1218.011",
+  "conditions": [
+    ["Image", "endswith", "\\rundll32.exe"],
+    [
+      "CommandLine",
+      "contains_all",
+      ["pcwutl.dll", "LaunchApplication"]
+    ]
+  ]
+},
+    {
         "id": 15,
         "name": "Command Shell Spawned by WMI Provider",
         "conditions": [
