@@ -7,49 +7,56 @@ def load_events(json_file):
         return json.load(f)
 
 
-def endswith(value, suffix):
-    return (value or "").lower().endswith(suffix.lower())
+def normalize(value):
+    return (value or "").lower()
 
 
-def contains(value, text):
-    return text.lower() in (value or "").lower()
+def check_condition(event, field, operator, expected):
+    actual = event.get(field)
 
+    if operator == "endswith":
+        return normalize(actual).endswith(normalize(expected))
 
-def rule_1_ftp_cmd(event):
-    return (
-        endswith(event.get("ParentImage"), "\\ftp.exe")
-        and endswith(event.get("Image"), "\\cmd.exe")
-    )
+    if operator == "contains":
+        return normalize(expected) in normalize(actual)
 
+    if operator == "equals":
+        return normalize(actual) == normalize(expected)
 
-def rule_13_mshta(event):
-    return (
-        endswith(event.get("Image"), "\\mshta.exe")
-        and contains(event.get("CommandLine"), ".hta")
-    )
-
-
-def rule_15_wmi_cmd(event):
-    return (
-        endswith(event.get("ParentImage"), "\\wmiprvse.exe")
-        and endswith(event.get("Image"), "\\cmd.exe")
-    )
+    return False
 
 
 RULES = [
     {
         "name": "Suspicious Command Shell Spawned by FTP",
-        "rule": rule_1_ftp_cmd
+        "conditions": [
+            ("ParentImage", "endswith", "\\ftp.exe"),
+            ("Image", "endswith", "\\cmd.exe"),
+        ]
     },
     {
         "name": "MSHTA Execution of HTA File",
-        "rule": rule_13_mshta
+        "conditions": [
+            ("Image", "endswith", "\\mshta.exe"),
+            ("CommandLine", "contains", ".hta"),
+        ]
     },
     {
         "name": "Command Shell Spawned by WMI Provider",
-        "rule": rule_15_wmi_cmd
+        "conditions": [
+            ("ParentImage", "endswith", "\\wmiprvse.exe"),
+            ("Image", "endswith", "\\cmd.exe"),
+        ]
     }
 ]
+
+
+def rule_matches(event, rule):
+    for field, operator, expected in rule["conditions"]:
+        if not check_condition(event, field, operator, expected):
+            return False
+
+    return True
 
 
 def run_detection(events):
@@ -57,7 +64,7 @@ def run_detection(events):
 
     for event in events:
         for rule in RULES:
-            if rule["rule"](event):
+            if rule_matches(event, rule):
                 alerts.append({
                     "rule": rule["name"],
                     "event": event
@@ -77,6 +84,7 @@ if __name__ == "__main__":
     alerts = run_detection(events)
 
     print(f"Total Events: {len(events)}")
+    print(f"Total Rules: {len(RULES)}")
     print(f"Total Alerts: {len(alerts)}")
 
     for alert in alerts:
