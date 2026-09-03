@@ -216,4 +216,65 @@
             ]
         ]
     }
+,
+{
+  "id": 14,
+  "name": "Rundll32 PCWUTL LaunchApplication Execution",
+  "conditions": [
+    ["Image", "endswith", "\\rundll32.exe"],
+    [
+      "CommandLine",
+      "contains_all",
+      ["pcwutl.dll", "LaunchApplication"]
+    ]
+  ]
+},
+{
+  "id": 16,
+  "name": "New Windows Service Executing Command Shell",
+  "conditions": [
+    ["EventID", "equals", "7045"],
+    ["ImagePath", "contains", "cmd.exe"]
+  ]
+},
+{
+  "id": 17,
+  "name": "Member Added to Local Administrators Group",
+  "conditions": [
+    ["EventID", "equals", "4732"],
+    ["TargetUserName", "equals", "Administrators"],
+    ["TargetDomainName", "equals", "Builtin"]
+  ]
+},
+{
+  "id": 18,
+  "name": "Remote Desktop Enabled via Registry",
+  "conditions": [
+    [
+      "TargetObject",
+      "endswith",
+      "\\Control\\Terminal Server\\fDenyTSConnections"
+    ],
+    ["Details", "equals", "DWORD (0x00000000)"]
+  ]
+},
+{
+  "id": 19,
+  "name": "Windows Defender Threat Action Event",
+  "conditions": [
+    ["EventID", "equals", "1117"]
+  ]
+},
+{
+  "id": 20,
+  "name": "Regsvr32 Scrobj DLL Scriptlet Execution",
+  "conditions": [
+    ["Image", "endswith", "\\regsvr32.exe"],
+    [
+      "CommandLine",
+      "contains_all",
+      ["/i:", "scrobj.dll"]
+    ]
+  ]
+}
 ]
