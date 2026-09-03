@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Cyberion ThreatShield</title>
+</head>
+
+<body>
+
+    <h1>Cyberion ThreatShield</h1>
+
+    <p>
+        Detection Engineering & Threat Hunting Dashboard
+    </p>
+
+    <hr>
+
+    <h2>EVTX Threat Scanner</h2>
+
+    <form
+        action="/upload"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        <input
+            type="file"
+            name="evtx_file"
+            accept=".evtx"
+            required
+        >
+
+        <button type="submit">
+            Upload EVTX
+        </button>
+
+    </form>
+
+    {% if message %}
+        <p>
+            <strong>{{ message }}</strong>
+        </p>
+    {% endif %}
+
+    <hr>
+
+    <h2>System Status</h2>
+
+    <p>20 Detection Rules Loaded</p>
+    <p>EVTX Parser Ready</p>
+    <p>Detection Engine Ready</p>
+
+</body>
+
+</html>
