@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Detection Rules | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                C
+            </div>
+
+            <div>
+                <h2>Cyberion</h2>
+                <span>ThreatShield</span>
+            </div>
+
+        </div>
+
+
+        <nav class="nav-menu">
+
+            <a
+                class="nav-item"
+                href="/"
+            >
+                Dashboard
+            </a>
+
+            <a
+                class="nav-item"
+                href="/#scanner"
+            >
+                Threat Scanner
+            </a>
+
+            <a
+                class="nav-item active"
+                href="/rules"
+            >
+                Detection Rules
+            </a>
+
+            <a
+                class="nav-item"
+                href="/#history"
+            >
+                Scan History
+            </a>
+
+            <a
+                class="nav-item"
+                href="/#alerts"
+            >
+                Alerts
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <p>Detection Engine</p>
+
+            <strong>Online</strong>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="eyebrow">
+                    Detection Engineering
+                </p>
+
+                <h1>
+                    Detection Rules
+                </h1>
+
+                <p class="subtitle">
+                    Review the rules used by Cyberion ThreatShield
+                    to analyze Windows EVTX telemetry.
+                </p>
+
+            </div>
+
+
+            <div class="status-pill">
+
+                <span class="status-dot"></span>
+
+                {{ total_rules }} Rules Active
+
+            </div>
+
+        </header>
+
+
+        <!-- SUMMARY -->
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    Total Rules
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_rules }}
+                </strong>
+
+                <span class="stat-caption">
+                    Detection rules loaded
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    Framework
+                </span>
+
+                <strong class="stat-value small">
+                    MITRE
+                </strong>
+
+                <span class="stat-caption">
+                    ATT&CK mapped detections
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    Data Source
+                </span>
+
+                <strong class="stat-value small">
+                    EVTX
+                </strong>
+
+                <span class="stat-caption">
+                    Windows Event Logs
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    Engine
+                </span>
+
+                <strong class="stat-value small">
+                    Online
+                </strong>
+
+                <span class="stat-caption">
+                    Rule matching ready
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- RULES -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <p class="eyebrow">
+                        Rule Library
+                    </p>
+
+                    <h2>
+                        Active Detection Rules
+                    </h2>
+
+                </div>
+
+                <span class="panel-badge">
+                    {{ total_rules }} rules
+                </span>
+
+            </div>
+
+
+            <div class="alert-controls">
+
+                <input
+                    id="ruleSearch"
+                    type="text"
+                    placeholder="Search rule, MITRE technique..."
+                >
+
+                <select id="ruleSeverity">
+
+                    <option value="all">
+                        All Severities
+                    </option>
+
+                    <option value="high">
+                        High
+                    </option>
+
+                    <option value="medium">
+                        Medium
+                    </option>
+
+                    <option value="low">
+                        Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="rulesList"
+                class="alerts-list"
+            >
+
+                {% for rule in rules %}
+
+                <article
+                    class="alert-card rule-card"
+                    data-severity="{{ rule.severity|lower }}"
+                    data-search="{{ rule.name|lower }} {{ rule.mitre_attack|lower }}"
+                >
+
+                    <div class="alert-top">
+
+                        <div>
+
+                            <p class="rule-id">
+                                Rule {{ rule.id }}
+                            </p>
+
+                            <h3>
+                                {{ rule.name }}
+                            </h3>
+
+                        </div>
+
+
+                        <div class="badges">
+
+                            <span
+                                class="severity severity-{{ rule.severity|lower }}"
+                            >
+                                {{ rule.severity|upper }}
+                            </span>
+
+                            <span class="mitre-badge">
+                                {{ rule.mitre_attack }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-row">
+
+                        <span>
+                            Detection Conditions
+                        </span>
+
+                        <div>
+
+                            {% for condition in rule.conditions %}
+
+                            <code>
+                                {{ condition[0] }}
+                                {{ condition[1] }}
+                                {{ condition[2] }}
+                            </code>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+
+            <p
+                id="noRulesMessage"
+                class="muted-text"
+                style="display: none;"
+            >
+                No detection rules match your search.
+            </p>
+
+        </section>
+
+
+        <footer class="footer">
+
+            Cyberion ThreatShield
+            • Detection Engineering Platform
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const ruleSearch =
+    document.getElementById("ruleSearch");
+
+const ruleSeverity =
+    document.getElementById("ruleSeverity");
+
+const ruleCards =
+    document.querySelectorAll(".rule-card");
+
+const noRulesMessage =
+    document.getElementById("noRulesMessage");
+
+
+function filterRules() {
+
+    const searchValue =
+        ruleSearch.value.toLowerCase().trim();
+
+    const severityValue =
+        ruleSeverity.value;
+
+    let visibleRules = 0;
+
+
+    ruleCards.forEach(function(card) {
+
+        const searchData =
+            card.dataset.search || "";
+
+        const severity =
+            card.dataset.severity || "";
+
+
+        const searchMatches =
+            searchData.includes(searchValue);
+
+        const severityMatches =
+            severityValue === "all" ||
+            severity === severityValue;
+
+
+        if (searchMatches && severityMatches) {
+
+            card.style.display = "";
+            visibleRules++;
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+
+    if (visibleRules === 0) {
+
+        noRulesMessage.style.display = "block";
+
+    } else {
+
+        noRulesMessage.style.display = "none";
+
+    }
+
+}
+
+
+ruleSearch.addEventListener(
+    "input",
+    filterRules
+);
+
+ruleSeverity.addEventListener(
+    "change",
+    filterRules
+);
+
+</script>
+
+</body>
+</html>

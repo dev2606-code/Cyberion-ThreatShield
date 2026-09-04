@@ -191,10 +191,6 @@ def calculate_analytics():
 # HOME PAGE
 # --------------------------------------------------
 
-# --------------------------------------------------
-# HOME PAGE
-# --------------------------------------------------
-
 @app.route("/")
 def home():
 
@@ -207,7 +203,20 @@ def home():
         scan_history=scan_history,
         analytics=analytics
     )
+# --------------------------------------------------
+# DETECTION RULES PAGE
+# --------------------------------------------------
 
+@app.route("/rules")
+def rules_page():
+
+    rules = load_rules()
+
+    return render_template(
+        "rules.html",
+        rules=rules,
+        total_rules=len(rules)
+    )
 # --------------------------------------------------
 # EVTX UPLOAD + SCAN
 # --------------------------------------------------
