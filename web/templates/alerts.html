@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Alerts | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                C
+            </div>
+
+            <div>
+                <h2>Cyberion</h2>
+                <span>ThreatShield</span>
+            </div>
+
+        </div>
+
+        <nav class="nav-menu">
+
+            <a class="nav-item" href="/">
+                Dashboard
+            </a>
+
+            <a class="nav-item" href="/#scanner">
+                Threat Scanner
+            </a>
+
+            <a class="nav-item" href="/rules">
+                Detection Rules
+            </a>
+
+            <a class="nav-item active" href="/alerts">
+                Alerts
+            </a>
+
+            <a class="nav-item" href="/#history">
+                Scan History
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Detection Engine</p>
+            <strong>Online</strong>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="eyebrow">
+                    Security Operations
+                </p>
+
+                <h1>
+                    Detection Alerts
+                </h1>
+
+                <p class="subtitle">
+                    Review the latest detection results generated
+                    by Cyberion ThreatShield.
+                </p>
+
+            </div>
+
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                {{ total_alerts }} Alerts
+            </div>
+
+        </header>
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Total Alerts
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_alerts }}
+                </strong>
+
+                <span class="stat-caption">
+                    Latest scan detections
+                </span>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Detection Rules
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_rules }}
+                </strong>
+
+                <span class="stat-caption">
+                    Rules available
+                </span>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Framework
+                </span>
+
+                <strong class="stat-value small">
+                    MITRE
+                </strong>
+
+                <span class="stat-caption">
+                    ATT&CK mapped alerts
+                </span>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Engine
+                </span>
+
+                <strong class="stat-value small">
+                    Online
+                </strong>
+
+                <span class="stat-caption">
+                    Detection engine active
+                </span>
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <p class="eyebrow">
+                        Alert Investigation
+                    </p>
+
+                    <h2>
+                        Latest Alerts
+                    </h2>
+
+                </div>
+
+                {% if total_alerts > 0 %}
+
+                <span class="danger-badge">
+                    {{ total_alerts }} alert(s)
+                </span>
+
+                {% else %}
+
+                <span class="safe-badge">
+                    No alerts
+                </span>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if alerts %}
+
+            <div class="alert-controls">
+
+                <input
+                    id="alertPageSearch"
+                    type="text"
+                    placeholder="Search rule, MITRE, process..."
+                >
+
+                <select id="alertPageSeverity">
+
+                    <option value="all">
+                        All Severities
+                    </option>
+
+                    <option value="high">
+                        High
+                    </option>
+
+                    <option value="medium">
+                        Medium
+                    </option>
+
+                    <option value="low">
+                        Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="alertPageList"
+                class="alerts-list"
+            >
+
+                {% for alert in alerts %}
+
+                <article
+                    class="alert-card alert-page-card"
+                    data-severity="{{ alert.severity|lower }}"
+                    data-search="
+                        {{ alert.rule_name|lower }}
+                        {{ alert.mitre_attack|lower }}
+                        {{ alert.event.Image|default('', true)|lower }}
+                        {{ alert.event.CommandLine|default('', true)|lower }}
+                    "
+                >
+
+                    <div class="alert-top">
+
+                        <div>
+
+                            <p class="rule-id">
+                                Rule {{ alert.rule_id }}
+                            </p>
+
+                            <h3>
+                                {{ alert.rule_name }}
+                            </h3>
+
+                        </div>
+
+
+                        <div class="badges">
+
+                            <span
+                                class="severity severity-{{ alert.severity|lower }}"
+                            >
+                                {{ alert.severity|upper }}
+                            </span>
+
+                            <span class="mitre-badge">
+                                {{ alert.mitre_attack }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="event-grid">
+
+                        <div>
+                            <span>Event ID</span>
+                            <strong>
+                                {{ alert.event.EventID }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Computer</span>
+                            <strong>
+                                {{ alert.event.Computer }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Time</span>
+                            <strong>
+                                {{ alert.event.TimeCreated }}
+                            </strong>
+                        </div>
+
+                        {% if alert.event.User %}
+
+                        <div>
+                            <span>User</span>
+                            <strong>
+                                {{ alert.event.User }}
+                            </strong>
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if alert.event.Image %}
+
+                    <div class="detail-row">
+                        <span>Image</span>
+
+                        <code>
+                            {{ alert.event.Image }}
+                        </code>
+                    </div>
+
+                    {% endif %}
+
+
+                    {% if alert.event.CommandLine %}
+
+                    <div class="detail-row">
+                        <span>Command Line</span>
+
+                        <code>
+                            {{ alert.event.CommandLine }}
+                        </code>
+                    </div>
+
+                    {% endif %}
+
+
+                    {% if alert.event.ParentImage %}
+
+                    <div class="detail-row">
+                        <span>Parent Process</span>
+
+                        <code>
+                            {{ alert.event.ParentImage }}
+                        </code>
+                    </div>
+
+                    {% endif %}
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+
+            <p
+                id="noAlertPageMessage"
+                class="muted-text"
+                style="display: none;"
+            >
+                No alerts match your search or severity filter.
+            </p>
+
+
+            {% else %}
+
+            <div class="no-alerts">
+
+                <div class="safe-icon">
+                    ✓
+                </div>
+
+                <h3>
+                    No alerts available
+                </h3>
+
+                <p>
+                    Run an EVTX scan from the dashboard
+                    to generate detection alerts.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <footer class="footer">
+            Cyberion ThreatShield
+            • Detection Engineering Platform
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const alertPageSearch =
+    document.getElementById("alertPageSearch");
+
+const alertPageSeverity =
+    document.getElementById("alertPageSeverity");
+
+const alertPageCards =
+    document.querySelectorAll(".alert-page-card");
+
+const noAlertPageMessage =
+    document.getElementById("noAlertPageMessage");
+
+
+function filterAlertPage() {
+
+    const searchValue =
+        alertPageSearch
+            ? alertPageSearch.value
+                .toLowerCase()
+                .trim()
+            : "";
+
+    const severityValue =
+        alertPageSeverity
+            ? alertPageSeverity.value
+            : "all";
+
+    let visible = 0;
+
+
+    alertPageCards.forEach((card) => {
+
+        const searchData =
+            card.dataset.search || "";
+
+        const severity =
+            card.dataset.severity || "";
+
+        const searchMatches =
+            searchData.includes(searchValue);
+
+        const severityMatches =
+            severityValue === "all" ||
+            severity === severityValue;
+
+
+        if (
+            searchMatches &&
+            severityMatches
+        ) {
+
+            card.style.display = "";
+            visible++;
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+
+    if (noAlertPageMessage) {
+
+        noAlertPageMessage.style.display =
+            visible === 0
+                ? "block"
+                : "none";
+
+    }
+
+}
+
+
+if (alertPageSearch) {
+
+    alertPageSearch.addEventListener(
+        "input",
+        filterAlertPage
+    );
+
+}
+
+
+if (alertPageSeverity) {
+
+    alertPageSeverity.addEventListener(
+        "change",
+        filterAlertPage
+    );
+
+}
+
+</script>
+
+</body>
+</html>

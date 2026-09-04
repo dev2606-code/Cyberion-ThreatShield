@@ -7,7 +7,9 @@ from flask import (
     Flask,
     render_template,
     request,
-    send_file
+    send_file,
+    redirect,
+    url_for
 )
 from werkzeug.utils import secure_filename
 
@@ -104,6 +106,8 @@ latest_reports = {
     "csv": None
 }
 
+latest_alerts = []
+latest_scan_result = {}
 
 # --------------------------------------------------
 # DETECTION RULES
@@ -168,8 +172,6 @@ def save_scan_history(history):
             ensure_ascii=False
         )
 
-
-scan_history = load_scan_history()
 scan_history = load_scan_history()
 def calculate_analytics():
 
@@ -209,19 +211,25 @@ def calculate_analytics():
  # --------------------------------------------------
 # HOME PAGE
 # --------------------------------------------------
-
 @app.route("/")
 def home():
 
     rules = load_rules()
     analytics = calculate_analytics()
 
+    context = {
+        "total_rules": len(rules),
+        "scan_history": scan_history,
+        "analytics": analytics
+    }
+
+    context.update(latest_scan_result)
+
     return render_template(
         "index.html",
-        total_rules=len(rules),
-        scan_history=scan_history,
-        analytics=analytics
+        **context
     )
+
 
 
 # --------------------------------------------------
@@ -237,9 +245,29 @@ def rules_page():
         rules=rules,
         total_rules=len(rules)
     )
+
+
+# --------------------------------------------------
+# ALERTS PAGE
+# --------------------------------------------------
+
+@app.route("/alerts")
+def alerts_page():
+
+    rules = load_rules()
+
+    return render_template(
+        "alerts.html",
+        alerts=latest_alerts,
+        total_alerts=len(latest_alerts),
+        total_rules=len(rules)
+    )
+
+
 # --------------------------------------------------
 # EVTX UPLOAD + SCAN
 # --------------------------------------------------
+
 
 @app.route(
     "/upload",
@@ -423,37 +451,33 @@ analytics=calculate_analytics()
         )
 
 
-        # ------------------------------------------
+               # ------------------------------------------
         # RENDER RESULTS
         # ------------------------------------------
 
-        return render_template( 
-            "index.html",
+        latest_alerts.clear()
+        latest_alerts.extend(alerts)
 
-            message=(
-                f"{filename} "
-                "scanned successfully."
+        latest_scan_result.clear()
+
+        latest_scan_result.update({
+            "message": (
+                f"{filename} scanned successfully."
             ),
+            "filename": filename,
+            "total_events": len(events),
+            "total_alerts": len(alerts),
+            "alerts": alerts,
+            "reports_ready": True
+        })
 
-            filename=filename,
-
-            total_events=len(events),
-
-            total_rules=len(rules),
-
-            total_alerts=len(alerts),
-
-                       alerts=alerts,
-
-            scan_history=scan_history,
-            analytics=calculate_analytics(),
-
-             reports_ready=True
-            
+        return redirect(
+            url_for("home"),
+            code=303
         )
 
-
     except Exception as error:
+       
 
         return render_template(
             "index.html",
