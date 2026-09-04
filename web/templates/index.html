@@ -174,66 +174,47 @@
 
             </div>
 
+<div class="stat-card">
+    <span class="stat-label">
+        Total Scans
+    </span>
 
+    <strong class="stat-value">
+        {{ analytics.total_scans }}
+    </strong>
 
-            <div class="stat-card">
+    <span class="stat-caption">
+        Recent EVTX analyses
+    </span>
+</div>
 
-                <span class="stat-label">
-                    Parser
-                </span>
+<div class="stat-card">
+    <span class="stat-label">
+        Total Events
+    </span>
 
-                <strong class="stat-value small">
-                    Ready
-                </strong>
+    <strong class="stat-value">
+        {{ analytics.total_events }}
+    </strong>
 
-                <span class="stat-caption">
-                    Windows EVTX telemetry
-                </span>
+    <span class="stat-caption">
+        Events analyzed
+    </span>
+</div>
 
-            </div>
+           <div class="stat-card">
+    <span class="stat-label">
+        Total Alerts
+    </span>
 
+    <strong class="stat-value">
+        {{ analytics.total_alerts }}
+    </strong>
 
-
-            <div class="stat-card">
-
-                <span class="stat-label">
-                    Detection Engine
-                </span>
-
-                <strong class="stat-value small">
-                    Online
-                </strong>
-
-                <span class="stat-caption">
-                    Automated rule matching
-                </span>
-
-            </div>
-
-
-
-            <div class="stat-card">
-
-                <span class="stat-label">
-                    Latest Alerts
-                </span>
-
-                <strong class="stat-value">
-
-                    {{
-                        total_alerts
-                        if total_alerts is defined
-                        else 0
-                    }}
-
-                </strong>
-
-                <span class="stat-caption">
-                    Current scan results
-                </span>
-
-            </div>
-
+    <span class="stat-caption">
+        Threat signals detected
+    </span>
+</div>
 
         </section>
 

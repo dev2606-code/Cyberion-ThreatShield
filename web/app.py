@@ -170,7 +170,26 @@ def save_scan_history(history):
 
 
 scan_history = load_scan_history()
+scan_history = load_scan_history()
 
+
+def calculate_analytics():
+    return {
+        "total_scans": len(scan_history),
+        "total_events": sum(
+            scan.get("total_events", 0)
+            for scan in scan_history
+        ),
+        "total_alerts": sum(
+            scan.get("total_alerts", 0)
+            for scan in scan_history
+        )
+    }
+
+
+# --------------------------------------------------
+# HOME PAGE
+# --------------------------------------------------
 
 # --------------------------------------------------
 # HOME PAGE
@@ -180,13 +199,14 @@ scan_history = load_scan_history()
 def home():
 
     rules = load_rules()
+    analytics = calculate_analytics()
 
     return render_template(
         "index.html",
         total_rules=len(rules),
-        scan_history=scan_history
+        scan_history=scan_history,
+        analytics=analytics
     )
-
 
 # --------------------------------------------------
 # EVTX UPLOAD + SCAN
@@ -206,7 +226,8 @@ def upload_file():
             "index.html",
             error="No file field received.",
             total_rules=len(rules),
-            scan_history=scan_history
+          scan_history=scan_history,
+analytics=calculate_analytics()
         )
 
 
@@ -219,7 +240,8 @@ def upload_file():
             "index.html",
             error="No EVTX file selected.",
             total_rules=len(rules),
-            scan_history=scan_history
+          scan_history=scan_history,
+analytics=calculate_analytics()
         )
 
 
@@ -231,7 +253,8 @@ def upload_file():
             "index.html",
             error="Only .evtx files are allowed.",
             total_rules=len(rules),
-            scan_history=scan_history
+           scan_history=scan_history,
+analytics=calculate_analytics()
         )
 
 
@@ -356,7 +379,7 @@ def upload_file():
         # RENDER RESULTS
         # ------------------------------------------
 
-        return render_template(
+        return render_template( 
             "index.html",
 
             message=(
@@ -372,11 +395,13 @@ def upload_file():
 
             total_alerts=len(alerts),
 
-            alerts=alerts,
+                       alerts=alerts,
 
             scan_history=scan_history,
+            analytics=calculate_analytics(),
 
-            reports_ready=True
+             reports_ready=True
+            
         )
 
 
@@ -392,7 +417,8 @@ def upload_file():
 
             total_rules=len(rules),
 
-            scan_history=scan_history
+          scan_history=scan_history,
+analytics=calculate_analytics()
         )
 
 
@@ -480,3 +506,4 @@ if __name__ == "__main__":
         debug=True,
         use_reloader=False
     )
+    
