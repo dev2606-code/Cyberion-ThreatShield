@@ -66,6 +66,10 @@ HISTORY_FILE = os.path.join(
     DATA_FOLDER,
     "scan_history.json"
 )
+LATEST_ALERTS_FILE = os.path.join(
+    DATA_FOLDER,
+    "latest_alerts.json"
+)
 
 RULES_FILE = os.path.join(
     BASE_DIR,
@@ -106,7 +110,6 @@ latest_reports = {
     "csv": None
 }
 
-latest_alerts = []
 latest_scan_result = {}
 
 # --------------------------------------------------
@@ -171,9 +174,51 @@ def save_scan_history(history):
             indent=4,
             ensure_ascii=False
         )
+def load_latest_alerts():
 
+    if not os.path.exists(LATEST_ALERTS_FILE):
+        return []
+
+    try:
+
+        with open(
+            LATEST_ALERTS_FILE,
+            "r",
+            encoding="utf-8"
+        ) as file:
+
+            alerts = json.load(file)
+
+        if not isinstance(alerts, list):
+            return []
+
+        return alerts
+
+    except (
+        json.JSONDecodeError,
+        OSError
+    ):
+        return []
+
+
+def save_latest_alerts(alerts):
+
+    with open(
+        LATEST_ALERTS_FILE,
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(
+            alerts,
+            file,
+            indent=4,
+            ensure_ascii=False
+        )
 scan_history = load_scan_history()
+latest_alerts = load_latest_alerts()
 def calculate_analytics():
+    
 
     return {
         "total_scans": len(scan_history),
@@ -457,6 +502,7 @@ analytics=calculate_analytics()
 
         latest_alerts.clear()
         latest_alerts.extend(alerts)
+        save_latest_alerts(latest_alerts)
 
         latest_scan_result.clear()
 
