@@ -227,7 +227,149 @@
             </div>
 
         </section>
+<section class="panel">
 
+    <div class="panel-header">
+
+        <div>
+            <p class="eyebrow">
+                Historical Detection Alerts
+            </p>
+
+            <h2>
+                Alerts From This Scan
+            </h2>
+        </div>
+
+        <span class="panel-badge">
+            {{ alerts|length }} Alert(s)
+        </span>
+
+    </div>
+
+
+    {% if alerts %}
+
+    <div class="alerts-list">
+
+        {% for alert in alerts %}
+
+        <article class="alert-card">
+
+            <div class="alert-top">
+
+                <div>
+
+                    <p class="rule-id">
+                        Rule {{ alert.rule_id }}
+                    </p>
+
+                    <h3>
+                        {{ alert.rule_name }}
+                    </h3>
+
+                </div>
+
+
+                <div class="badges">
+
+                    <span
+                        class="severity severity-{{ alert.severity|lower }}"
+                    >
+                        {{ alert.severity|upper }}
+                    </span>
+
+                    <span class="mitre-badge">
+                        {{ alert.mitre_attack }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="event-grid">
+
+                <div>
+                    <span>Event ID</span>
+                    <strong>
+                        {{ alert.event.EventID }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Computer</span>
+                    <strong>
+                        {{ alert.event.Computer }}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Time</span>
+                    <strong>
+                        {{ alert.event.TimeCreated }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            {% if alert.event.Image %}
+
+            <div class="detail-row">
+                <span>Image</span>
+                <code>{{ alert.event.Image }}</code>
+            </div>
+
+            {% endif %}
+
+
+            {% if alert.event.CommandLine %}
+
+            <div class="detail-row">
+                <span>Command Line</span>
+                <code>{{ alert.event.CommandLine }}</code>
+            </div>
+
+            {% endif %}
+
+
+            {% if alert.event.ParentImage %}
+
+            <div class="detail-row">
+                <span>Parent Process</span>
+                <code>{{ alert.event.ParentImage }}</code>
+            </div>
+
+            {% endif %}
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="no-alerts">
+
+        <div class="safe-icon">
+            ✓
+        </div>
+
+        <h3>
+            No stored alerts for this scan
+        </h3>
+
+        <p>
+            This scan has no persisted detection alerts.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</section>
 
         <section class="panel">
 

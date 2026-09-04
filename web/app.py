@@ -329,11 +329,13 @@ def history_detail(scan_id):
         return "Scan not found", 404
 
     scan = scan_history[scan_id]
+    alerts = scan.get("alerts", [])
 
     return render_template(
         "history_detail.html",
-        scan=scan,
-        scan_id=scan_id
+            scan=scan,
+        scan_id=scan_id,
+        alerts=alerts
     )
 @app.route("/status")
 def status_page():
@@ -509,7 +511,7 @@ analytics=calculate_analytics()
             for alert in alerts
             if str(alert.get("severity", "")).lower() == "low"
         )
-
+          
         scan_entry = {
             "high_alerts": high_alerts,
             "medium_alerts": medium_alerts,
@@ -517,26 +519,22 @@ analytics=calculate_analytics()
 
             "filename": filename,
 
-            "total_events":
-                len(events),
+            "total_events": len(events),
+            "total_alerts": len(alerts),
 
-            "total_alerts":
-                len(alerts),
+            "timestamp": display_timestamp,
 
-            "timestamp":
-                display_timestamp
+            # Store alerts for this specific scan
+            "alerts": alerts
         }
-        
+
         scan_history.insert(
             0,
             scan_entry
         )
 
-
         # Keep latest 10 scans only
         del scan_history[10:]
-
-
         save_scan_history(
             scan_history
         )
