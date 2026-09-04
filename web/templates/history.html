@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Scan History | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                C
+            </div>
+
+            <div>
+                <h2>Cyberion</h2>
+                <span>ThreatShield</span>
+            </div>
+
+        </div>
+
+
+        <nav class="nav-menu">
+
+            <a class="nav-item" href="/">
+                Dashboard
+            </a>
+
+            <a class="nav-item" href="/#scanner">
+                Threat Scanner
+            </a>
+
+            <a class="nav-item" href="/rules">
+                Detection Rules
+            </a>
+
+            <a class="nav-item" href="/alerts">
+                Alerts
+            </a>
+
+            <a class="nav-item active" href="/history">
+                Scan History
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <p>
+                Detection Engine
+            </p>
+
+            <strong>
+                Online
+            </strong>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="eyebrow">
+                    Investigation Timeline
+                </p>
+
+                <h1>
+                    Scan History
+                </h1>
+
+                <p class="subtitle">
+                    Review recent EVTX scans, event counts,
+                    alerts and severity information.
+                </p>
+
+            </div>
+
+
+            <div class="status-pill">
+
+                <span class="status-dot"></span>
+
+                {{ total_scans }} Recent Scans
+
+            </div>
+
+        </header>
+
+
+        <section class="stats-grid">
+
+            <div class="stat

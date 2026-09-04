@@ -307,7 +307,18 @@ def alerts_page():
         total_alerts=len(latest_alerts),
         total_rules=len(rules)
     )
+# --------------------------------------------------
+# SCAN HISTORY PAGE
+# --------------------------------------------------
 
+@app.route("/history")
+def history_page():
+
+    return render_template(
+        "history.html",
+        scan_history=scan_history,
+        total_scans=len(scan_history)
+    )
 
 # --------------------------------------------------
 # EVTX UPLOAD + SCAN
