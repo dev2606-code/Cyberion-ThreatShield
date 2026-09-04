@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>System Status | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">C</div>
+
+            <div>
+                <h2>Cyberion</h2>
+                <span>ThreatShield</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+
+            <a class="nav-item" href="/">
+                Dashboard
+            </a>
+
+            <a class="nav-item" href="/#scanner">
+                Threat Scanner
+            </a>
+
+            <a class="nav-item" href="/rules">
+                Detection Rules
+            </a>
+
+            <a class="nav-item" href="/alerts">
+                Alerts
+            </a>
+
+            <a class="nav-item" href="/history">
+                Scan History
+            </a>
+
+            <a class="nav-item active" href="/status">
+                System Status
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Detection Engine</p>
+            <strong>Online</strong>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="eyebrow">
+                    Platform Health
+                </p>
+
+                <h1>
+                    System Status
+                </h1>
+
+                <p class="subtitle">
+                    Monitor Cyberion ThreatShield components
+                    and detection engine health.
+                </p>
+            </div>
+
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                All Systems Operational
+            </div>
+
+        </header>
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Detection Engine
+                </span>
+
+                <strong class="stat-value small">
+                    Online
+                </strong>
+
+                <span class="stat-caption">
+                    Scanner operational
+                </span>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Detection Rules
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_rules }}
+                </strong>
+
+                <span class="stat-caption">
+                    Rules currently loaded
+                </span>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Stored Scans
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_scans }}
+                </strong>
+
+                <span class="stat-caption">
+                    Recent scan records
+                </span>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Latest Alerts
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_alerts }}
+                </strong>
+
+                <span class="stat-caption">
+                    Current alert dataset
+                </span>
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <p class="eyebrow">
+                        Components
+                    </p>
+
+                    <h2>
+                        Service Health
+                    </h2>
+                </div>
+
+                <span class="safe-badge">
+                    Operational
+                </span>
+
+            </div>
+
+
+            <div class="scan-summary">
+
+                <div class="summary-item">
+                    <span>Flask Web Server</span>
+                    <strong>Online</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>EVTX Parser</span>
+                    <strong>Ready</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Detection Engine</span>
+                    <strong>Ready</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Alert Storage</span>
+                    <strong>Available</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <p class="eyebrow">
+                        Latest Activity
+                    </p>
+
+                    <h2>
+                        Latest Scan
+                    </h2>
+                </div>
+
+            </div>
+
+
+            {% if latest_scan %}
+
+            <div class="scan-summary">
+
+                <div class="summary-item">
+                    <span>File</span>
+                    <strong>
+                        {{ latest_scan.filename }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Events</span>
+                    <strong>
+                        {{ latest_scan.total_events }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Alerts</span>
+                    <strong>
+                        {{ latest_scan.total_alerts }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Timestamp</span>
+                    <strong>
+                        {{ latest_scan.timestamp }}
+                    </strong>
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <p class="muted-text">
+                No scans have been recorded yet.
+            </p>
+
+            {% endif %}
+
+        </section>
+
+
+        <footer class="footer">
+            Cyberion ThreatShield
+            • Detection Engineering Platform
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

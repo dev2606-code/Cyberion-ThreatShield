@@ -319,7 +319,30 @@ def history_page():
         scan_history=scan_history,
         total_scans=len(scan_history)
     )
+# --------------------------------------------------
+# SYSTEM STATUS PAGE
+# --------------------------------------------------
 
+@app.route("/status")
+def status_page():
+
+    rules = load_rules()
+    analytics = calculate_analytics()
+
+    latest_scan = (
+        scan_history[0]
+        if scan_history
+        else None
+    )
+
+    return render_template(
+        "status.html",
+        total_rules=len(rules),
+        total_scans=len(scan_history),
+        total_alerts=len(latest_alerts),
+        analytics=analytics,
+        latest_scan=latest_scan
+    )
 # --------------------------------------------------
 # EVTX UPLOAD + SCAN
 # --------------------------------------------------
