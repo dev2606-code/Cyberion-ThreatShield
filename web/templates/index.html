@@ -217,7 +217,37 @@
 </div>
 
         </section>
+<!-- ANALYTICS CHART -->
+<section class="panel">
 
+    <div class="panel-header">
+        <div>
+            <p class="eyebrow">Analytics</p>
+            <h2>Recent Scan Activity</h2>
+        </div>
+
+        <span class="panel-badge">
+            Latest 10 scans
+        </span>
+    </div>
+
+    <div
+        class="chart-container"
+        id="scanActivityChart"
+    >
+        {% for scan in scan_history %}
+
+        <div
+            class="chart-data"
+            data-filename="{{ scan.filename }}"
+            data-events="{{ scan.total_events }}"
+            data-alerts="{{ scan.total_alerts }}"
+        ></div>
+
+        {% endfor %}
+    </div>
+
+</section>
 
 
         <section
