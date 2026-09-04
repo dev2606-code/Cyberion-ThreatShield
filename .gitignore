@@ -5,28 +5,20 @@ __pycache__/
 # Virtual environment
 venv/
 .venv/
-
 # Temporary parsed event files
 *_events.json
 rule*.json
-
 # Generated alert reports
 reports/alerts_*.json
 reports/alerts_*.csv
-
 # macOS
 .DS_Storedatasets/
-
 # Local EVTX datasets
 datasets/
-
 # Web uploaded EVTX files
 uploads/
-
 # Local backups
 *.backup
-
 # Runtime scan history
 data/scan_history.json
-data/
 data/
