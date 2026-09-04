@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Scan Details | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">C</div>
+
+            <div>
+                <h2>Cyberion</h2>
+                <span>ThreatShield</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+
+            <a class="nav-item" href="/">
+                Dashboard
+            </a>
+
+            <a class="nav-item" href="/#scanner">
+                Threat Scanner
+            </a>
+
+            <a class="nav-item" href="/rules">
+                Detection Rules
+            </a>
+
+            <a class="nav-item" href="/alerts">
+                Alerts
+            </a>
+
+            <a class="nav-item active" href="/history">
+                Scan History
+            </a>
+
+            <a class="nav-item" href="/status">
+                System Status
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Detection Engine</p>
+            <strong>Online</strong>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="eyebrow">
+                    Investigation Details
+                </p>
+
+                <h1>
+                    Scan Details
+                </h1>
+
+                <p class="subtitle">
+                    Detailed summary of the selected EVTX scan.
+                </p>
+            </div>
+
+            <a
+                class="report-button secondary"
+                href="/history"
+            >
+                Back to History
+            </a>
+
+        </header>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <p class="eyebrow">
+                        Scan Information
+                    </p>
+
+                    <h2>
+                        {{ scan.filename }}
+                    </h2>
+                </div>
+
+                {% if scan.total_alerts > 0 %}
+
+                <span class="danger-badge">
+                    {{ scan.total_alerts }} Alert(s)
+                </span>
+
+                {% else %}
+
+                <span class="safe-badge">
+                    Clean Scan
+                </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="scan-summary">
+
+                <div class="summary-item">
+                    <span>File</span>
+                    <strong>
+                        {{ scan.filename }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Timestamp</span>
+                    <strong>
+                        {{ scan.timestamp }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Events Scanned</span>
+                    <strong>
+                        {{ scan.total_events }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Total Alerts</span>
+                    <strong>
+                        {{ scan.total_alerts }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <p class="eyebrow">
+                        Threat Analysis
+                    </p>
+
+                    <h2>
+                        Severity Breakdown
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span class="stat-label">
+                        High Severity
+                    </span>
+
+                    <strong class="stat-value">
+                        {{ scan.get("high_alerts", 0) }}
+                    </strong>
+
+                    <span class="stat-caption">
+                        Critical threat signals
+                    </span>
+                </div>
+
+
+                <div class="stat-card">
+                    <span class="stat-label">
+                        Medium Severity
+                    </span>
+
+                    <strong class="stat-value">
+                        {{ scan.get("medium_alerts", 0) }}
+                    </strong>
+
+                    <span class="stat-caption">
+                        Suspicious activity
+                    </span>
+                </div>
+
+
+                <div class="stat-card">
+                    <span class="stat-label">
+                        Low Severity
+                    </span>
+
+                    <strong class="stat-value">
+                        {{ scan.get("low_alerts", 0) }}
+                    </strong>
+
+                    <span class="stat-caption">
+                        Low-risk indicators
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <p class="eyebrow">
+                        Investigation
+                    </p>
+
+                    <h2>
+                        Recommended Actions
+                    </h2>
+                </div>
+
+            </div>
+
+            {% if scan.total_alerts > 0 %}
+
+            <p class="muted-text">
+                This scan triggered one or more detection rules.
+                Review the alert information and investigate
+                suspicious events.
+            </p>
+
+            <div class="report-actions">
+
+                <a
+                    class="report-button"
+                    href="/alerts"
+                >
+                    View Latest Alerts
+                </a>
+
+                <a
+                    class="report-button secondary"
+                    href="/#scanner"
+                >
+                    Run Another Scan
+                </a>
+
+            </div>
+
+            {% else %}
+
+            <p class="muted-text">
+                No configured detection rules were triggered
+                during this scan.
+            </p>
+
+            <div class="report-actions">
+
+                <a
+                    class="report-button secondary"
+                    href="/#scanner"
+                >
+                    Run Another Scan
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <footer class="footer">
+            Cyberion ThreatShield
+            • Detection Engineering Platform
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -109,7 +109,274 @@
 
         </header>
 
+<section class="stats-grid">
+<section class="stats-grid">
 
-        <section class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-label">Total Scans</span>
+        <strong class="stat-value">
+            {{ total_scans }}
+        </strong>
+        <span class="stat-caption">
+            Stored recent scans
+        </span>
+    </div>
 
-            <div class="stat
+    <div class="stat-card">
+        <span class="stat-label">Total Events</span>
+        <strong class="stat-value">
+            {{ scan_history | sum(attribute="total_events") }}
+        </strong>
+        <span class="stat-caption">
+            Events analyzed
+        </span>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-label">Total Alerts</span>
+        <strong class="stat-value">
+            {{ scan_history | sum(attribute="total_alerts") }}
+        </strong>
+        <span class="stat-caption">
+            Threat signals detected
+        </span>
+    </div>
+
+</section>
+
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <div>
+            <p class="eyebrow">Scan Records</p>
+            <h2>Recent EVTX Activity</h2>
+        </div>
+
+        <span class="panel-badge">
+            Latest {{ total_scans }}
+        </span>
+
+    </div>
+
+
+    {% if scan_history %}
+
+    <div class="alert-controls">
+
+        <input
+            id="historySearch"
+            type="text"
+            placeholder="Search filename..."
+        >
+
+        <select id="historyFilter">
+
+            <option value="all">
+                All Scans
+            </option>
+
+            <option value="alerts">
+                With Alerts
+            </option>
+
+            <option value="clean">
+                No Alerts
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="history-list">
+
+        {% for scan in scan_history %}
+
+        <div
+            class="history-item history-page-item"
+            data-search="{{ scan.filename|lower }}"
+            data-alerts="{{ scan.total_alerts }}"
+        >
+
+            <div>
+
+                <strong>
+                    {{ scan.filename }}
+                </strong>
+
+                <span>
+                    {{ scan.timestamp }}
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Events: {{ scan.total_events }}
+                </span>
+
+                <span>
+                    Alerts: {{ scan.total_alerts }}
+                </span>
+
+                <span>
+                    High: {{ scan.get("high_alerts", 0) }}
+                </span>
+
+                <span>
+                    Medium: {{ scan.get("medium_alerts", 0) }}
+                </span>
+
+                <span>
+                    Low: {{ scan.get("low_alerts", 0) }}
+                </span>
+
+            </div>
+
+        </div>
+            </div>
+
+            <a
+                class="report-button secondary"
+                href="{{ url_for('history_detail', scan_id=loop.index0) }}"
+            >
+                View Details
+            </a>
+
+        </div>
+
+        {% endfor %}
+        
+
+    </div>
+
+
+    <p
+        id="noHistoryMessage"
+        class="muted-text"
+        style="display:none;"
+    >
+        No scan records match your search.
+    </p>
+
+    {% else %}
+
+    <div class="no-alerts">
+
+        <div class="safe-icon">
+            ✓
+        </div>
+
+        <h3>No scan history available</h3>
+
+        <p>
+            Run an EVTX scan from the dashboard
+            to create scan history.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<footer class="footer">
+    Cyberion ThreatShield
+    • Detection Engineering Platform
+</footer>
+
+</main>
+
+</div>
+
+
+<script>
+
+const historySearch =
+    document.getElementById("historySearch");
+
+const historyFilter =
+    document.getElementById("historyFilter");
+
+const historyItems =
+    document.querySelectorAll(".history-page-item");
+
+const noHistoryMessage =
+    document.getElementById("noHistoryMessage");
+
+
+function filterHistory() {
+
+    const search =
+        historySearch
+            ? historySearch.value.toLowerCase().trim()
+            : "";
+
+    const filter =
+        historyFilter
+            ? historyFilter.value
+            : "all";
+
+    let visible = 0;
+
+    historyItems.forEach((item) => {
+
+        const filename =
+            item.dataset.search || "";
+
+        const alerts =
+            Number(item.dataset.alerts || 0);
+
+        const searchMatch =
+            filename.includes(search);
+
+        let filterMatch = true;
+
+        if (filter === "alerts") {
+            filterMatch = alerts > 0;
+        }
+
+        if (filter === "clean") {
+            filterMatch = alerts === 0;
+        }
+
+        if (searchMatch && filterMatch) {
+            item.style.display = "";
+            visible++;
+        } else {
+            item.style.display = "none";
+        }
+
+    });
+
+    if (noHistoryMessage) {
+        noHistoryMessage.style.display =
+            visible === 0 ? "block" : "none";
+    }
+
+}
+
+
+if (historySearch) {
+    historySearch.addEventListener(
+        "input",
+        filterHistory
+    );
+}
+
+if (historyFilter) {
+    historyFilter.addEventListener(
+        "change",
+        filterHistory
+    );
+}
+
+</script>
+
+</body>
+</html>

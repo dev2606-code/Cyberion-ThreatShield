@@ -322,7 +322,19 @@ def history_page():
 # --------------------------------------------------
 # SYSTEM STATUS PAGE
 # --------------------------------------------------
+@app.route("/history/<int:scan_id>")
+def history_detail(scan_id):
 
+    if scan_id < 0 or scan_id >= len(scan_history):
+        return "Scan not found", 404
+
+    scan = scan_history[scan_id]
+
+    return render_template(
+        "history_detail.html",
+        scan=scan,
+        scan_id=scan_id
+    )
 @app.route("/status")
 def status_page():
 
