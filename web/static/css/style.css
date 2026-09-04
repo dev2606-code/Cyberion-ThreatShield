@@ -895,4 +895,51 @@ body {
         grid-template-columns: 80px 1fr;
     }
 
+}/* --------------------------------------------------
+   SEVERITY ANALYTICS
+-------------------------------------------------- */
+
+.severity-analytics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.severity-stat {
+    padding: 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.severity-stat span {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.severity-stat strong {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.severity-stat.high {
+    border-left: 4px solid #ff5d73;
+}
+
+.severity-stat.medium {
+    border-left: 4px solid #f5a623;
+}
+
+.severity-stat.low {
+    border-left: 4px solid #4fd1a5;
+}
+
+@media (max-width: 768px) {
+    .severity-analytics {
+        grid-template-columns: 1fr;
+    }
 }

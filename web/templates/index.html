@@ -251,9 +251,55 @@
 
 
         <section
-            id="scanner"
-            class="panel scanner-panel"
-        >
+        <!-- SEVERITY ANALYTICS -->
+<section class="panel">
+
+    <div class="panel-header">
+        <div>
+            <p class="eyebrow">
+                Threat Analytics
+            </p>
+
+            <h2>
+                Alert Severity Breakdown
+            </h2>
+        </div>
+
+        <span class="panel-badge">
+            Recent scans
+        </span>
+    </div>
+
+    <div class="severity-analytics">
+
+        <div class="severity-stat high">
+            <span>High</span>
+            <strong>
+                {{ analytics.high_alerts }}
+            </strong>
+        </div>
+
+        <div class="severity-stat medium">
+            <span>Medium</span>
+            <strong>
+                {{ analytics.medium_alerts }}
+            </strong>
+        </div>
+
+        <div class="severity-stat low">
+            <span>Low</span>
+            <strong>
+                {{ analytics.low_alerts }}
+            </strong>
+        </div>
+
+    </div>
+
+</section>
+            <section
+    id="scanner"
+    class="panel scanner-panel"
+>
 
 
             <div class="panel-header">

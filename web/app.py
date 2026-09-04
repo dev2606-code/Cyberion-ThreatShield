@@ -171,23 +171,42 @@ def save_scan_history(history):
 
 scan_history = load_scan_history()
 scan_history = load_scan_history()
-
-
 def calculate_analytics():
+
     return {
         "total_scans": len(scan_history),
+
         "total_events": sum(
             scan.get("total_events", 0)
             for scan in scan_history
         ),
+
         "total_alerts": sum(
             scan.get("total_alerts", 0)
+            for scan in scan_history
+        ),
+
+        "high_alerts": sum(
+            scan.get("high_alerts", 0)
+            for scan in scan_history
+        ),
+
+        "medium_alerts": sum(
+            scan.get("medium_alerts", 0)
+            for scan in scan_history
+        ),
+
+        "low_alerts": sum(
+            scan.get("low_alerts", 0)
             for scan in scan_history
         )
     }
 
 
-# --------------------------------------------------
+    
+
+
+ # --------------------------------------------------
 # HOME PAGE
 # --------------------------------------------------
 
@@ -203,10 +222,11 @@ def home():
         scan_history=scan_history,
         analytics=analytics
     )
+
+
 # --------------------------------------------------
 # DETECTION RULES PAGE
 # --------------------------------------------------
-
 @app.route("/rules")
 def rules_page():
 
@@ -353,8 +373,28 @@ analytics=calculate_analytics()
         # ------------------------------------------
         # SAVE SCAN HISTORY
         # ------------------------------------------
+        high_alerts = sum(
+            1
+            for alert in alerts
+            if str(alert.get("severity", "")).lower() == "high"
+        )
+
+        medium_alerts = sum(
+            1
+            for alert in alerts
+            if str(alert.get("severity", "")).lower() == "medium"
+        )
+
+        low_alerts = sum(
+            1
+            for alert in alerts
+            if str(alert.get("severity", "")).lower() == "low"
+        )
 
         scan_entry = {
+            "high_alerts": high_alerts,
+            "medium_alerts": medium_alerts,
+            "low_alerts": low_alerts,
 
             "filename": filename,
 
@@ -367,8 +407,7 @@ analytics=calculate_analytics()
             "timestamp":
                 display_timestamp
         }
-
-
+        
         scan_history.insert(
             0,
             scan_entry
