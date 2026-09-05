@@ -184,6 +184,10 @@ Cyberion ThreatShield includes a Flask-based SOC dashboard that provides:
 - Severity filtering
 - Report downloads
 
+### 📸 Dashboard Preview
+
+![Cyberion ThreatShield SOC Dashboard](screenshots/dashboard.png)
+
 ---
 
 ## 🔍 Example Detection
@@ -262,34 +266,48 @@ Cyberion-ThreatShield/
 │   └── detection_rules.json
 │
 ├── data/
+│   ├── latest_alerts.json
 │   └── scan_history.json
 │
 ├── datasets/
-│   └── EVTX-ATTACK-SAMPLES/
+│   ├── EVTX-ATTACK-SAMPLES/
+│   └── zeek-sample/
 │
 ├── reports/
+│   ├── data_dictionary.md
+│   ├── detection_coverage.md
+│   ├── mitre_attack_mapping.md
+│   ├── project_architecture.md
+│   ├── rule_test_evidence.md
+│   ├── threat_hunt_1.md
+│   └── threat_hunt_2.md
+│
+├── screenshots/
+│   └── dashboard.png
 │
 ├── sigma-rules/
 │   └── *.yml
 │
 ├── src/
-│   ├── evtx_parser.py
-│   └── detection_engine.py
+│   ├── detection_engine.py
+│   └── evtx_parser.py
 │
 ├── uploads/
 │
 ├── web/
 │   ├── app.py
-│   │
 │   ├── static/
 │   │   ├── css/
 │   │   │   └── style.css
-│   │   │
 │   │   └── js/
 │   │       └── app.js
-│   │
 │   └── templates/
-│       └── index.html
+│       ├── index.html
+│       ├── alerts.html
+│       ├── history.html
+│       ├── history_detail.html
+│       ├── rules.html
+│       └── status.html
 │
 ├── .gitignore
 └── README.md
@@ -348,13 +366,13 @@ source venv/bin/activate
 Start Flask:
 
 ```bash
-python web/app.py
+flask --app web/app.py run --host 127.0.0.1 --port 5001
 ```
 
 The development server will normally be available at:
 
 ```text
-http://127.0.0.1:5000
+http://127.0.0.1:5001
 ```
 
 Open the address in your browser.
@@ -451,8 +469,6 @@ A detection represents an investigation signal and should be reviewed with addit
 
 Planned improvements include:
 
-- 📊 Detection analytics and charts
-- 📋 Dedicated Detection Rules page
 - 🔎 Advanced threat-hunting filters
 - 📈 MITRE ATT&CK analytics
 - 🗃️ Improved scan-history management
@@ -486,8 +502,12 @@ SOC Dashboard             ✅
 JSON / CSV Reports        ✅
 Persistent Scan History   ✅
 Alert Search & Filter     ✅
-Analytics Dashboard       🚧
-Rules Management UI       🚧
+Analytics Dashboard       ✅
+Rules Management UI       ✅
+Dedicated Alerts Page      ✅
+Historical Alert Details   ✅
+Persistent Latest Alerts   ✅
+System Status Page         ✅
 Deployment                🚧
 ```
 
