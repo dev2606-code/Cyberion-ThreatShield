@@ -233,6 +233,7 @@
             >
 
                 {% for alert in alerts %}
+                {% set event = alert.get('event', {}) %}
 
                 <article
                     class="alert-card alert-page-card"
@@ -240,8 +241,8 @@
                     data-search="
                         {{ alert.rule_name|lower }}
                         {{ alert.mitre_attack|lower }}
-                        {{ alert.event.Image|default('', true)|lower }}
-                        {{ alert.event.CommandLine|default('', true)|lower }}
+                        {{ event.Image|default('', true)|lower }}
+                        {{ event.CommandLine|default('', true)|lower }}
                     "
                 >
 
@@ -282,30 +283,30 @@
                         <div>
                             <span>Event ID</span>
                             <strong>
-                                {{ alert.event.EventID }}
+                                {{ event.EventID }}
                             </strong>
                         </div>
 
                         <div>
                             <span>Computer</span>
                             <strong>
-                                {{ alert.event.Computer }}
+                                {{ event.Computer }}
                             </strong>
                         </div>
 
                         <div>
                             <span>Time</span>
                             <strong>
-                                {{ alert.event.TimeCreated }}
+                                {{ event.TimeCreated }}
                             </strong>
                         </div>
 
-                        {% if alert.event.User %}
+                        {% if event.User %}
 
                         <div>
                             <span>User</span>
                             <strong>
-                                {{ alert.event.User }}
+                                {{ event.User }}
                             </strong>
                         </div>
 
@@ -314,39 +315,39 @@
                     </div>
 
 
-                    {% if alert.event.Image %}
+                    {% if event.Image %}
 
                     <div class="detail-row">
                         <span>Image</span>
 
                         <code>
-                            {{ alert.event.Image }}
+                            {{ event.Image }}
                         </code>
                     </div>
 
                     {% endif %}
 
 
-                    {% if alert.event.CommandLine %}
+                    {% if event.CommandLine %}
 
                     <div class="detail-row">
                         <span>Command Line</span>
 
                         <code>
-                            {{ alert.event.CommandLine }}
+                            {{ event.CommandLine }}
                         </code>
                     </div>
 
                     {% endif %}
 
 
-                    {% if alert.event.ParentImage %}
+                    {% if event.ParentImage %}
 
                     <div class="detail-row">
                         <span>Parent Process</span>
 
                         <code>
-                            {{ alert.event.ParentImage }}
+                            {{ event.ParentImage }}
                         </code>
                     </div>
 
