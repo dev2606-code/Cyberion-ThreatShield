@@ -5,6 +5,28 @@
 The project combines **Detection Engineering, Windows Event Log Analysis, Threat Hunting, Sigma Rules, MITRE ATT&CK, Python, and Flask** into a single security analysis platform.
 
 ---
+## 🌐 Live Demo
+
+Cyberion ThreatShield is deployed and publicly accessible on Render.
+
+**Live Application:**  
+https://cyberion-threatshield.onrender.com/
+
+The deployed version supports:
+
+- Windows EVTX file scanning
+- 20-rule detection engine
+- MITRE ATT&CK mapped alerts
+- SOC dashboard analytics
+- Scan history and detailed scan views
+- Dedicated alerts page
+- JSON report export
+- CSV report export
+- System status monitoring
+
+> Note: Runtime scan-history data may reset when the hosting service restarts or redeploys.
+
+---
 
 ## 🚀 Key Features
 
@@ -476,7 +498,7 @@ Planned improvements include:
 - ⚡ Performance improvements
 - 🌐 Deployment for demonstration
 - 🔐 Authentication and user management
-
+- 🌐 Deployment for demonstration
 ---
 
 ## 👨‍💻 Author
@@ -508,7 +530,7 @@ Dedicated Alerts Page      ✅
 Historical Alert Details   ✅
 Persistent Latest Alerts   ✅
 System Status Page         ✅
-Deployment                🚧
+Deployment                 ✅
 ```
 
 ---
