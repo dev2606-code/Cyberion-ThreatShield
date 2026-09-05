@@ -12,7 +12,8 @@ rule*.json
 reports/alerts_*.json
 reports/alerts_*.csv
 # macOS
-.DS_Storedatasets/
+.DS_Store
+
 # Local EVTX datasets
 datasets/
 # Web uploaded EVTX files
