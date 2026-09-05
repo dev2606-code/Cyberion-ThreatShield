@@ -268,14 +268,17 @@ def home():
         "analytics": analytics
     }
 
-    context.update(latest_scan_result)
+    # Show the latest scan result only once.
+    # On browser refresh, temporary scan results are cleared.
+    if latest_scan_result:
+        context.update(latest_scan_result)
+        latest_scan_result.clear()
 
     return render_template(
         "index.html",
         active_page="dashboard",
         **context
     )
-
 
 
 # --------------------------------------------------
