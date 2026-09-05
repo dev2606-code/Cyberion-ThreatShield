@@ -1,0 +1,53 @@
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon">
+            C
+        </div>
+
+        <div>
+            <h2>Cyberion</h2>
+            <span>ThreatShield</span>
+        </div>
+    </div>
+
+    <nav class="nav-menu">
+
+        <a class="nav-item {% if active_page == 'dashboard' %}active{% endif %}"
+           href="/">
+            Dashboard
+        </a>
+
+        <a class="nav-item"
+           href="/#scanner">
+            Threat Scanner
+        </a>
+
+        <a class="nav-item {% if active_page == 'rules' %}active{% endif %}"
+           href="/rules">
+            Detection Rules
+        </a>
+
+        <a class="nav-item {% if active_page == 'history' %}active{% endif %}"
+           href="/history">
+            Scan History
+        </a>
+
+        <a class="nav-item {% if active_page == 'alerts' %}active{% endif %}"
+           href="/alerts">
+            Alerts
+        </a>
+
+        <a class="nav-item {% if active_page == 'status' %}active{% endif %}"
+           href="/status">
+            System Status
+        </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+        <p>Detection Engine</p>
+        <strong>Online</strong>
+    </div>
+
+</aside>

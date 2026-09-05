@@ -272,6 +272,7 @@ def home():
 
     return render_template(
         "index.html",
+        active_page="dashboard",
         **context
     )
 
@@ -287,6 +288,7 @@ def rules_page():
 
     return render_template(
         "rules.html",
+        active_page="rules",
         rules=rules,
         total_rules=len(rules)
     )
@@ -303,6 +305,7 @@ def alerts_page():
 
     return render_template(
         "alerts.html",
+        active_page="alerts",
         alerts=latest_alerts,
         total_alerts=len(latest_alerts),
         total_rules=len(rules)
@@ -316,6 +319,7 @@ def history_page():
 
     return render_template(
         "history.html",
+        active_page="history",
         scan_history=scan_history,
         total_scans=len(scan_history)
     )
@@ -333,7 +337,8 @@ def history_detail(scan_id):
 
     return render_template(
         "history_detail.html",
-            scan=scan,
+        active_page="history",
+        scan=scan,
         scan_id=scan_id,
         alerts=alerts
     )
@@ -351,6 +356,7 @@ def status_page():
 
     return render_template(
         "status.html",
+        active_page="status",
         total_rules=len(rules),
         total_scans=len(scan_history),
         total_alerts=len(latest_alerts),
@@ -375,6 +381,7 @@ def upload_file():
         return render_template(
             "index.html",
             error="No file field received.",
+            active_page="dashboard",
             total_rules=len(rules),
           scan_history=scan_history,
 analytics=calculate_analytics()
@@ -389,6 +396,7 @@ analytics=calculate_analytics()
         return render_template(
             "index.html",
             error="No EVTX file selected.",
+            active_page="dashboard",
             total_rules=len(rules),
           scan_history=scan_history,
 analytics=calculate_analytics()
@@ -402,6 +410,7 @@ analytics=calculate_analytics()
         return render_template(
             "index.html",
             error="Only .evtx files are allowed.",
+            active_page="dashboard",
             total_rules=len(rules),
            scan_history=scan_history,
 analytics=calculate_analytics()
