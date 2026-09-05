@@ -911,3 +911,49 @@ Authorized administrative activity, software registration, or security testing m
 ### Note
 
 The detection should be investigated using the complete command line, parent process, user, network activity, and surrounding process events.
+## Threat Hunt Detection Validation
+
+### Rule 9 - PowerShell LSASS MiniDumpWriteDump Activity
+
+**Test Sample:** `Powershell_4104_MiniDumpWriteDump_Lsass.evtx`
+
+**Result:** PASS
+
+Observed detection:
+
+- Rule ID: 9
+- Severity: High
+- MITRE ATT&CK: T1003.001
+- Event ID: 4104
+- Host: MSEDGEWIN10
+- Evidence: `Get-Process lsass`
+- Evidence: `MiniDumpWriteDump`
+- Script Path: `C:\Users\Public\lsass_wer_ps.ps1`
+
+The detection engine successfully identified PowerShell script-block activity associated with LSASS memory-dump behavior.
+
+---
+
+### Rule 15 - Command Shell Spawned by WMI Provider
+
+**Test Sample:** `LM_wmiexec_impacket_sysmon_whoami.evtx`
+
+**Result:** PASS
+
+Test summary:
+
+- Events Parsed: 7
+- Total Alerts Detected: 4
+- Rule 15 Matches: 3
+- Severity: High
+- MITRE ATT&CK: T1047
+- Event ID: 1
+- Host: IEWIN7
+- User: IEWIN7\IEUser
+- Parent Process: `WmiPrvSE.exe`
+- Child Process: `cmd.exe`
+- Observed Command: `whoami /all`
+
+The detection engine successfully identified command shells spawned by the WMI Provider process. Multiple matching process-creation events were present in the sample.
+
+---

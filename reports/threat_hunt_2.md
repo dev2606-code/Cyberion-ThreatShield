@@ -96,3 +96,76 @@ Correlate with:
 Threat Hunt #2 identified WMI-related command execution activity on IEWIN7.
 
 The available evidence supports the original hypothesis that WMI was used to launch a command shell and execute system-discovery commands.
+## False Positive Considerations
+
+Potential legitimate explanations may include:
+
+- Authorized remote administration
+- System-management software using WMI
+- Administrative automation scripts
+- Controlled penetration-testing or security-validation activity
+
+The parent-child process relationship, account context, source host,
+authentication events, and surrounding network activity should be reviewed
+before classifying the activity as malicious.
+
+## Detection Rule Correlation
+
+The observed threat-hunting evidence is covered by the Cyberion ThreatShield detection engine.
+
+Detection Rule:
+Rule 15 - Command Shell Spawned by WMI Provider
+
+Severity:
+High
+
+MITRE ATT&CK:
+T1047 - Windows Management Instrumentation
+
+Detection Logic:
+- ParentImage ends with "\wmiprvse.exe"
+- Image ends with "\cmd.exe"
+
+This rule provides automated detection coverage for the suspicious behavior identified during Threat Hunt #2.
+
+## Multi-Rule Detection Correlation
+
+Analysis of the WMI execution EVTX sample produced multiple related detection alerts.
+
+### Detection Summary
+
+- Events Parsed: 7
+- Total Alerts: 4
+- Rule 15 Alerts: 3
+- Rule 4 Alerts: 1
+
+### Rule 15 - Command Shell Spawned by WMI Provider
+
+- Severity: High
+- MITRE ATT&CK: T1047
+- Event ID: 1
+- Parent Process: WmiPrvSE.exe
+- Child Process: cmd.exe
+- Observed Command: whoami /all
+
+Three process-creation events matched Rule 15.
+
+### Rule 4 - SMB Network Connection
+
+- Severity: Medium
+- MITRE ATT&CK: T1021.002
+- Event ID: 3
+- Image: System
+
+One network-connection event matched Rule 4.
+
+### Analyst Correlation
+
+The sample contains both WMI-based command execution and SMB-related
+network activity. Correlating these alerts provides more investigation
+context than reviewing either detection independently.
+
+The evidence supports investigation of related WMI execution and SMB
+activity on the affected host, while additional source-host and
+authentication telemetry would be required to establish the complete
+activity chain.

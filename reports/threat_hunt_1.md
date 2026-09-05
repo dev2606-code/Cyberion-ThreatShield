@@ -91,3 +91,62 @@ Correlate this event with:
 Threat Hunt #1 successfully identified suspicious PowerShell activity
 targeting LSASS memory. The available evidence supports the original
 hunt hypothesis.
+## False Positive Considerations
+
+Potential legitimate explanations may include:
+
+- Authorized debugging or diagnostic activity
+- Approved administrative scripts
+- Security or forensic tools collecting process-memory information
+- Controlled security testing
+
+These possibilities should be validated using user context, process ancestry,
+file reputation, endpoint alerts, and change-management records.
+
+## Detection Rule Correlation
+
+The observed threat-hunting evidence is covered by the Cyberion ThreatShield detection engine.
+
+Detection Rule:
+Rule 9 - PowerShell LSASS MiniDumpWriteDump Activity
+
+Severity:
+High
+
+MITRE ATT&CK:
+T1003.001 - OS Credential Dumping: LSASS Memory
+
+Detection Logic:
+- Event ID 4104
+- ScriptBlockText contains "Get-Process lsass"
+- ScriptBlockText contains "MiniDumpWriteDump"
+
+This rule provides automated detection coverage for the suspicious behavior identified during Threat Hunt #1.
+
+## Detection Validation Result
+
+The Cyberion ThreatShield detection engine was tested against the EVTX
+sample used for this threat hunt.
+
+### Test Summary
+
+- Events Parsed: 4
+- Total Alerts: 1
+- Rule 9 Alerts: 1
+- Severity: High
+- MITRE ATT&CK: T1003.001
+- Event ID: 4104
+- Host: MSEDGEWIN10
+- Script Path: C:\Users\Public\lsass_wer_ps.ps1
+
+### Validation Result
+
+PASS
+
+Rule 9 successfully detected the PowerShell script-block activity containing
+both `Get-Process lsass` and `MiniDumpWriteDump`.
+
+No additional Cyberion ThreatShield detection rules triggered on this sample.
+
+This validates the correlation between the threat-hunting hypothesis,
+observed telemetry, MITRE ATT&CK mapping, and automated detection logic.
