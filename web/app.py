@@ -2,14 +2,15 @@ import json
 import os
 import sys
 from datetime import datetime
-
+from functools import wraps
 from flask import (
     Flask,
     render_template,
     request,
     send_file,
     redirect,
-    url_for
+    url_for,
+    session
 )
 from werkzeug.utils import secure_filename
 
@@ -45,6 +46,10 @@ from detection_engine import (
 # --------------------------------------------------
 
 app = Flask(__name__)
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "cyberion-dev-secret-key"
+)
 
 
 UPLOAD_FOLDER = os.path.join(
@@ -248,7 +253,57 @@ def calculate_analytics():
             for scan in scan_history
         )
     }
+# --------------------------------------------------
+# AUTHENTICATION
+# --------------------------------------------------
+# --------------------------------------------------
+# AUTHENTICATION
+# --------------------------------------------------
 
+def login_required(view_function):
+
+    @wraps(view_function)
+    def wrapped_view(*args, **kwargs):
+
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+
+        return view_function(*args, **kwargs)
+
+    return wrapped_view
+
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    error = None
+
+    if request.method == "POST":
+
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+        if username == "admin" and password == "cyberion123":
+            session["logged_in"] = True
+            session["username"] = username
+
+            return redirect(url_for("home"))
+
+        error = "Invalid username or password."
+
+    return render_template(
+        "login.html",
+        error=error
+    )
+
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(url_for("login"))
 
     
 
@@ -257,6 +312,7 @@ def calculate_analytics():
 # HOME PAGE
 # --------------------------------------------------
 @app.route("/")
+@login_required
 def home():
 
     rules = load_rules()
@@ -676,7 +732,7 @@ if __name__ == "__main__":
 
     app.run(
         host="127.0.0.1",
-        port=5000,
+        port=5001,
         debug=True,
         use_reloader=False
     )

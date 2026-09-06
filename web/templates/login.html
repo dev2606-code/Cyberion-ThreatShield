@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body class="login-body">
+
+    <div class="login-container">
+
+        <div class="login-brand">
+            <div class="login-logo">C</div>
+
+            <div>
+                <h1>Cyberion ThreatShield</h1>
+                <p>Detection Engineering Platform</p>
+            </div>
+        </div>
+
+        <div class="login-card">
+
+            <p class="eyebrow">SECURE ACCESS</p>
+
+            <h2>Welcome back</h2>
+
+            <p class="login-subtitle">
+                Sign in to access your security dashboard.
+            </p>
+
+            {% if error %}
+            <div class="message error">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+
+                <div class="login-field">
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="Enter username"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="login-field">
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Enter password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button
+                    class="login-button"
+                    type="submit"
+                >
+                    Sign In
+                </button>
+
+            </form>
+
+            <div class="login-security">
+                <span class="status-dot"></span>
+                Protected security workspace
+            </div>
+
+        </div>
+
+        <p class="login-footer">
+            Cyberion ThreatShield • Detection Engineering Platform
+        </p>
+
+    </div>
+
+</body>
+</html>
