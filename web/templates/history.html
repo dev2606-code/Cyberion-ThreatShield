@@ -55,43 +55,51 @@
 
         </header>
 
-<section class="stats-grid">
-<section class="stats-grid">
+<section class="stats-grid history-stats-grid">
 
-    <div class="stat-card">
-        <span class="stat-label">Total Scans</span>
-        <strong class="stat-value">
-            {{ total_scans }}
-        </strong>
-        <span class="stat-caption">
-            Stored recent scans
-        </span>
+    <div class="stat-card history-summary-card">
+        <div class="history-summary-icon">◫</div>
+        <div>
+            <span class="stat-label">Total Scans</span>
+            <strong class="stat-value">
+                {{ total_scans }}
+            </strong>
+            <span class="stat-caption">
+                Stored recent scans
+            </span>
+        </div>
     </div>
 
-    <div class="stat-card">
-        <span class="stat-label">Total Events</span>
-        <strong class="stat-value">
-            {{ scan_history | sum(attribute="total_events") }}
-        </strong>
-        <span class="stat-caption">
-            Events analyzed
-        </span>
+    <div class="stat-card history-summary-card">
+        <div class="history-summary-icon">◉</div>
+        <div>
+            <span class="stat-label">Total Events</span>
+            <strong class="stat-value">
+                {{ scan_history | sum(attribute="total_events") }}
+            </strong>
+            <span class="stat-caption">
+                Events analyzed
+            </span>
+        </div>
     </div>
 
-    <div class="stat-card">
-        <span class="stat-label">Total Alerts</span>
-        <strong class="stat-value">
-            {{ scan_history | sum(attribute="total_alerts") }}
-        </strong>
-        <span class="stat-caption">
-            Threat signals detected
-        </span>
+    <div class="stat-card history-summary-card">
+        <div class="history-summary-icon">!</div>
+        <div>
+            <span class="stat-label">Total Alerts</span>
+            <strong class="stat-value">
+                {{ scan_history | sum(attribute="total_alerts") }}
+            </strong>
+            <span class="stat-caption">
+                Threat signals detected
+            </span>
+        </div>
     </div>
 
 </section>
 
 
-<section class="panel">
+<section class="panel history-panel">
 
     <div class="panel-header">
 
@@ -109,7 +117,7 @@
 
     {% if scan_history %}
 
-    <div class="alert-controls">
+    <div class="alert-controls history-controls">
 
         <input
             id="historySearch"
@@ -118,7 +126,6 @@
         >
 
         <select id="historyFilter">
-
             <option value="all">
                 All Scans
             </option>
@@ -130,9 +137,19 @@
             <option value="clean">
                 No Alerts
             </option>
-
         </select>
 
+    </div>
+
+
+    <div class="history-table-head">
+        <span>Filename & Timestamp</span>
+        <span>Events</span>
+        <span>Alerts</span>
+        <span>High</span>
+        <span>Medium</span>
+        <span>Low</span>
+        <span>Action</span>
     </div>
 
 
@@ -146,48 +163,59 @@
             data-alerts="{{ scan.total_alerts }}"
         >
 
-            <div>
+            <div class="history-file-cell">
 
-                <strong>
-                    {{ scan.filename }}
+                <div class="history-file-icon">
+                    ▣
+                </div>
+
+                <div class="history-file-text">
+                    <strong>
+                        {{ scan.filename }}
+                    </strong>
+
+                    <span>
+                        {{ scan.timestamp }}
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="history-metric">
+                <span>Events</span>
+                <strong>{{ scan.total_events }}</strong>
+            </div>
+
+            <div class="history-metric">
+                <span>Alerts</span>
+                <strong>{{ scan.total_alerts }}</strong>
+            </div>
+
+            <div class="history-metric">
+                <span>High</span>
+                <strong class="metric-high">
+                    {{ scan.get("high_alerts", 0) }}
                 </strong>
-
-                <span>
-                    {{ scan.timestamp }}
-                </span>
-
             </div>
 
-
-            <div>
-
-                <span>
-                    Events: {{ scan.total_events }}
-                </span>
-
-                <span>
-                    Alerts: {{ scan.total_alerts }}
-                </span>
-
-                <span>
-                    High: {{ scan.get("high_alerts", 0) }}
-                </span>
-
-                <span>
-                    Medium: {{ scan.get("medium_alerts", 0) }}
-                </span>
-
-                <span>
-                    Low: {{ scan.get("low_alerts", 0) }}
-                </span>
-
+            <div class="history-metric">
+                <span>Medium</span>
+                <strong class="metric-medium">
+                    {{ scan.get("medium_alerts", 0) }}
+                </strong>
             </div>
 
-        </div>
+            <div class="history-metric">
+                <span>Low</span>
+                <strong class="metric-low">
+                    {{ scan.get("low_alerts", 0) }}
+                </strong>
             </div>
+
 
             <a
-                class="report-button secondary"
+                class="report-button history-details-button"
                 href="{{ url_for('history_detail', scan_id=loop.index0) }}"
             >
                 View Details
@@ -196,7 +224,6 @@
         </div>
 
         {% endfor %}
-        
 
     </div>
 
@@ -209,7 +236,14 @@
         No scan records match your search.
     </p>
 
-    {% else %}
+   {% else %}
+<p
+    id="noHistoryMessage"
+    class="muted-text"
+    style="display:none;"
+>
+    No scan records match your search.
+</p>
 
     <div class="no-alerts">
 
