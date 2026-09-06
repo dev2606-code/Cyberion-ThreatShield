@@ -46,11 +46,20 @@ from detection_engine import (
 # --------------------------------------------------
 
 app = Flask(__name__)
+
 app.secret_key = os.environ.get(
     "SECRET_KEY",
     "cyberion-dev-secret-key"
 )
 
+ADMIN_USERNAME = os.environ.get(
+    "ADMIN_USERNAME",
+    "admin"
+)
+
+ADMIN_PASSWORD = os.environ.get(
+    "ADMIN_PASSWORD"
+)
 
 UPLOAD_FOLDER = os.path.join(
     BASE_DIR,
@@ -273,7 +282,6 @@ def login_required(view_function):
     return wrapped_view
 
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -284,7 +292,11 @@ def login():
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
 
-        if username == "admin" and password == "cyberion123":
+        if (
+            ADMIN_PASSWORD
+            and username == ADMIN_USERNAME
+            and password == ADMIN_PASSWORD
+        ):
             session["logged_in"] = True
             session["username"] = username
 
@@ -296,6 +308,7 @@ def login():
         "login.html",
         error=error
     )
+
 
 
 @app.route("/logout")
@@ -341,6 +354,7 @@ def home():
 # DETECTION RULES PAGE
 # --------------------------------------------------
 @app.route("/rules")
+@login_required
 def rules_page():
 
     rules = load_rules()
@@ -358,6 +372,7 @@ def rules_page():
 # --------------------------------------------------
 
 @app.route("/alerts")
+@login_required
 def alerts_page():
 
     rules = load_rules()
@@ -374,6 +389,7 @@ def alerts_page():
 # --------------------------------------------------
 
 @app.route("/history")
+@login_required
 def history_page():
 
     return render_template(
@@ -386,6 +402,7 @@ def history_page():
 # SYSTEM STATUS PAGE
 # --------------------------------------------------
 @app.route("/history/<int:scan_id>")
+@login_required
 def history_detail(scan_id):
 
     if scan_id < 0 or scan_id >= len(scan_history):
@@ -402,6 +419,7 @@ def history_detail(scan_id):
         alerts=alerts
     )
 @app.route("/status")
+@login_required
 def status_page():
 
     rules = load_rules()
@@ -431,6 +449,7 @@ def status_page():
     "/upload",
     methods=["POST"]
 )
+@login_required
 def upload_file():
 
     rules = load_rules()
@@ -657,6 +676,7 @@ analytics=calculate_analytics()
 # --------------------------------------------------
 
 @app.route("/download/json")
+@login_required
 def download_json():
 
     report = latest_reports.get(
@@ -693,6 +713,7 @@ def download_json():
 # --------------------------------------------------
 
 @app.route("/download/csv")
+@login_required
 def download_csv():
 
     report = latest_reports.get(
