@@ -3,3 +3,4 @@ python-evtx==0.8.1
 PyYAML==6.0.3
 gunicorn==26.2.0
 Flask-Mail==0.10.0
+Authlib==1.6.5
