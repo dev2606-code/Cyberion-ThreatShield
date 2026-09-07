@@ -1885,3 +1885,102 @@ body {
         font-size: 24px;
     }
 }
+/* Authentication links */
+.login-security a {
+    color: #38bdf8;
+    font-weight: 600;
+    text-decoration: none;
+}
+.login-security a {
+    color: #38bdf8;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.login-security a:hover {
+    color: #7dd3fc;
+    text-decoration: underline;
+}
+/* Google Login */
+
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(148, 163, 184, 0.25);
+}
+
+.google-login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 8px;
+    background: transparent;
+    color: #e2e8f0;
+    font-weight: 600;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: 0.2s ease;
+}
+
+.google-login-button:hover {
+    background: rgba(56, 189, 248, 0.08);
+    border-color: #4538f8;
+}
+/* Logout */
+.logout-item {
+    margin-top: 12px;
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.logout-item:hover {
+    background: rgba(248, 113, 113, 0.10);
+    border-color: #f87171;
+    color: #fca5a5;
+}
+.google-icon {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #4285f4;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.google-login-button {
+    gap: 8px;
+}
+.login-card > p.login-security {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.signup-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}

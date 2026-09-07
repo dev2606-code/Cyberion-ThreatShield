@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign Up | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body class="login-body">
+
+    <div class="login-container">
+
+        <div class="login-brand">
+            <div class="login-logo">C</div>
+
+            <div>
+                <h1>Cyberion ThreatShield</h1>
+                <p>Detection Engineering Platform</p>
+            </div>
+        </div>
+
+        <div class="login-card">
+
+            <p class="eyebrow">CREATE ACCOUNT</p>
+
+            <h2>Sign Up</h2>
+
+            <p class="login-subtitle">
+                Create your account to access Cyberion ThreatShield.
+            </p>
+
+            {% if error %}
+            <div class="message error">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('signup') }}">
+
+                <div class="login-field">
+                    <label for="username">Username</label>
+
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="Choose a username"
+                        autocomplete="username"
+                        required
+                    >
+              </div>
+
+<div class="login-field">
+    <label for="email">Email Address</label>
+
+    <input
+        id="email"
+        name="email"
+        type="email"
+        placeholder="Enter your email"
+        autocomplete="email"
+        required
+    >
+</div>
+
+<div class="login-field">
+    <label for="password">Password</label>
+
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <div class="login-field">
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        id="confirm_password"
+                        name="confirm_password"
+                        type="password"
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <button class="login-button" type="submit">
+                    Create Account
+                </button>
+
+            </form>
+
+            <p class="login-security">
+                Already have an account?
+                <a href="{{ url_for('login') }}">Sign In</a>
+            </p>
+
+        </div>
+
+        <p class="login-footer">
+            Cyberion ThreatShield • Detection Engineering Platform
+        </p>
+
+    </div>
+
+</body>
+</html>

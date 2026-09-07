@@ -13,8 +13,10 @@ from flask import (
     session
 )
 from werkzeug.utils import secure_filename
-
-
+from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from flask_mail import Mail, Message
+from authlib.integrations.flask_client import OAuth
 # --------------------------------------------------
 # PROJECT PATHS
 # --------------------------------------------------
@@ -51,7 +53,26 @@ app.secret_key = os.environ.get(
     "SECRET_KEY",
     "cyberion-dev-secret-key"
 )
+oauth = OAuth(app)
 
+google = oauth.register(
+    name="google",
+    client_id=os.environ.get("GOOGLE_CLIENT_ID"),
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={
+        "scope": "openid email profile"
+    }
+)
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME")
+
+mail = Mail(app)
 ADMIN_USERNAME = os.environ.get(
     "ADMIN_USERNAME",
     "admin"
@@ -59,8 +80,9 @@ ADMIN_USERNAME = os.environ.get(
 
 ADMIN_PASSWORD = os.environ.get(
     "ADMIN_PASSWORD"
+  
 )
-
+reset_serializer = URLSafeTimedSerializer(app.secret_key)
 UPLOAD_FOLDER = os.path.join(
     BASE_DIR,
     "uploads"
@@ -84,7 +106,10 @@ LATEST_ALERTS_FILE = os.path.join(
     DATA_FOLDER,
     "latest_alerts.json"
 )
-
+USERS_FILE = os.path.join(
+    DATA_FOLDER,
+    "users.json"
+)
 RULES_FILE = os.path.join(
     BASE_DIR,
     "config",
@@ -268,7 +293,38 @@ def calculate_analytics():
 # --------------------------------------------------
 # AUTHENTICATION
 # --------------------------------------------------
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        return {}
 
+    try:
+        with open(
+            USERS_FILE,
+            "r",
+            encoding="utf-8"
+        ) as file:
+            users = json.load(file)
+
+        if not isinstance(users, dict):
+            return {}
+
+        return users
+
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def save_users(users):
+    with open(
+        USERS_FILE,
+        "w",
+        encoding="utf-8"
+    ) as file:
+        json.dump(
+            users,
+            file,
+            indent=4
+        )
 def login_required(view_function):
 
     @wraps(view_function)
@@ -282,6 +338,247 @@ def login_required(view_function):
     return wrapped_view
 
 
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+
+    error = None
+
+    if request.method == "POST":
+
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        if len(username) < 3:
+            error = "Username must be at least 3 characters."
+
+        elif not email:
+            error = "Email address is required."
+
+        elif len(password) < 6:
+            error = "Password must be at least 6 characters."
+
+        elif password != confirm_password:
+            error = "Passwords do not match."
+
+        else:
+            users = load_users()
+
+            if username in users:
+                error = "Username already exists."
+
+            elif any(
+                user.get("email", "").lower() == email
+                for user in users.values()
+            ):
+                error = "Email already registered."
+
+            else:
+                users[username] = {
+                    "email": email,
+                    "password_hash": generate_password_hash(password)
+                }
+
+                save_users(users)
+
+                return redirect(url_for("login"))
+
+    return render_template(
+        "signup.html",
+        error=error
+    )
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+
+    error = None
+    message = None
+
+    if request.method == "POST":
+
+        email = request.form.get("email", "").strip().lower()
+        users = load_users()
+
+        username = None
+
+        for name, user in users.items():
+            if user.get("email", "").lower() == email:
+                username = name
+                break
+
+        message = (
+            "If an account exists for this email, "
+            "a password reset link has been generated."
+        )
+
+        if username:
+            token = reset_serializer.dumps(
+                username,
+                salt="password-reset"
+            )
+
+            reset_link = url_for(
+                "reset_password",
+                token=token,
+                _external=True
+            )
+
+            try:
+                msg = Message(
+                    subject="Cyberion ThreatShield - Password Reset",
+                    recipients=[email]
+                )
+
+                msg.body = f"""Hello {username},
+
+A password reset was requested for your Cyberion ThreatShield account.
+
+Use this link to reset your password:
+
+{reset_link}
+
+This link expires in 15 minutes.
+
+If you did not request a password reset, you can ignore this email.
+"""
+
+                print("DEBUG: attempting to send reset email")
+                mail.send(msg)
+                print("Password reset email sent.")
+
+            except Exception as e:
+                print(f"Email sending failed: {e}")
+    return render_template(
+        "forgot_password.html",
+        error=error,
+        message=message
+    )
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+
+def reset_password(token):
+
+    try:
+        username = reset_serializer.loads(
+            token,
+            salt="password-reset",
+            max_age=900
+        )
+
+    except SignatureExpired:
+        return render_template(
+            "reset_password.html",
+            error="This password reset link has expired."
+        )
+
+    except BadSignature:
+        return render_template(
+            "reset_password.html",
+            error="Invalid password reset link."
+        )
+
+    users = load_users()
+
+    if username not in users:
+        return render_template(
+            "reset_password.html",
+            error="Invalid password reset link."
+        )
+
+    error = None
+
+    if request.method == "POST":
+
+        password = request.form.get("password", "")
+        confirm_password = request.form.get(
+            "confirm_password",
+            ""
+        )
+
+        if len(password) < 6:
+            error = "Password must be at least 6 characters."
+
+        elif password != confirm_password:
+            error = "Passwords do not match."
+
+        else:
+            users[username]["password_hash"] = (
+                generate_password_hash(password)
+            )
+
+            save_users(users)
+
+            return redirect(url_for("login"))
+
+    return render_template(
+        "reset_password.html",
+        error=error
+    )
+@app.route("/login/google")
+def google_login():
+
+    redirect_uri = url_for(
+        "google_callback",
+        _external=True
+    )
+
+    return google.authorize_redirect(redirect_uri)
+    
+@app.route("/login/google/callback")
+def google_callback():
+
+    print("DEBUG: GOOGLE CALLBACK EXECUTED")
+
+    token = google.authorize_access_token()
+    user_info = token.get("userinfo")
+
+    if not user_info:
+        return redirect(url_for("login"))
+
+    email = user_info.get("email", "").strip().lower()
+    name = user_info.get("name", "").strip()
+
+    if not email:
+        return redirect(url_for("login"))
+
+    users = load_users()
+    username = None
+
+    # Check whether this email already exists
+    for existing_username, user in users.items():
+        if user.get("email", "").lower() == email:
+            username = existing_username
+            break
+
+    # Existing account: link Google login
+    if username is not None:
+        users[username]["google_linked"] = True
+        users[username]["name"] = name
+        save_users(users)
+
+    # New Google account
+    else:
+        base_username = email.split("@")[0] or "google_user"
+        username = base_username
+        counter = 1
+
+        while username in users:
+            username = f"{base_username}{counter}"
+            counter += 1
+
+        users[username] = {
+            "email": email,
+            "name": name,
+            "auth_provider": "google",
+            "google_linked": True
+        }
+
+        save_users(users)
+
+    session["logged_in"] = True
+    session["username"] = username
+    session["email"] = email
+
+    return redirect(url_for("home"))
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -292,11 +589,24 @@ def login():
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
 
-        if (
+        users = load_users()
+        user = users.get(username)
+
+        valid_admin = (
             ADMIN_PASSWORD
             and username == ADMIN_USERNAME
             and password == ADMIN_PASSWORD
-        ):
+        )
+
+        valid_user = (
+            user
+            and check_password_hash(
+                user.get("password_hash", ""),
+                password
+            )
+        )
+
+        if valid_admin or valid_user:
             session["logged_in"] = True
             session["username"] = username
 
@@ -308,8 +618,6 @@ def login():
         "login.html",
         error=error
     )
-
-
 
 @app.route("/logout")
 def logout():

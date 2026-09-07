@@ -45,10 +45,7 @@
             <form method="POST" action="{{ url_for('login') }}">
 
                 <div class="login-field">
-                    <label for="username">
-                        Username
-                    </label>
-
+                    <label for="username">Username</label>
                     <input
                         id="username"
                         name="username"
@@ -60,10 +57,7 @@
                 </div>
 
                 <div class="login-field">
-                    <label for="password">
-                        Password
-                    </label>
-
+                    <label for="password">Password</label>
                     <input
                         id="password"
                         name="password"
@@ -74,25 +68,47 @@
                     >
                 </div>
 
-                <button
-                    class="login-button"
-                    type="submit"
-                >
+                <p class="login-security">
+                    <a href="{{ url_for('forgot_password') }}">
+                        Forgot Password?
+                    </a>
+                </p>
+
+                <button class="login-button" type="submit">
                     Sign In
                 </button>
 
             </form>
+
+            <div class="login-divider">
+                <span>OR</span>
+            </div>
+
+            <a
+                href="{{ url_for('google_login') }}"
+                class="google-login-button"
+            >
+                <span class="google-icon">G</span>
+                <span>Continue with Google</span>
+            </a>
+
+            <p class="login-security signup-link">
+                <span>Don't have an account?</span>
+                <a href="{{ url_for('signup') }}">
+                    Create Account
+                </a>
+            </p>
 
             <div class="login-security">
                 <span class="status-dot"></span>
                 Protected security workspace
             </div>
 
-        </div>
+            <p class="login-footer">
+                Cyberion ThreatShield • Detection Engineering Platform
+            </p>
 
-        <p class="login-footer">
-            Cyberion ThreatShield • Detection Engineering Platform
-        </p>
+        </div>
 
     </div>
 
