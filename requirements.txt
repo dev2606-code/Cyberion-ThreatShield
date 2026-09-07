@@ -4,3 +4,4 @@ PyYAML==6.0.3
 gunicorn==26.2.0
 Flask-Mail==0.10.0
 Authlib==1.6.5
+requests==2.32.5
