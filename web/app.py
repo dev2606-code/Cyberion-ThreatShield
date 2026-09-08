@@ -368,6 +368,7 @@ def signup():
         else:
             users = load_users()
 
+
             if username in users:
                 error = "Username already exists."
 
@@ -401,7 +402,15 @@ def forgot_password():
 
         email = request.form.get("email", "").strip().lower()
         users = load_users()
-
+        print("DEBUG: user count =", len(users), flush=True)
+        print(
+            "DEBUG: submitted email found =",
+            any(
+                user.get("email", "").lower() == email
+                for user in users.values()
+            ),
+            flush=True
+        )
         username = None
 
         for name, user in users.items():
