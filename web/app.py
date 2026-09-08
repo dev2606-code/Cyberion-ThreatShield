@@ -17,6 +17,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from flask_mail import Mail, Message
 from authlib.integrations.flask_client import OAuth
+from flask_mail import Mail, Message
+import resend
+resend.api_key = os.environ.get("RESEND_API_KEY")
 # --------------------------------------------------
 # PROJECT PATHS
 # --------------------------------------------------
@@ -422,32 +425,33 @@ def forgot_password():
                 token=token,
                 _external=True
             )
-
             try:
-                msg = Message(
-                    subject="Cyberion ThreatShield - Password Reset",
-                    recipients=[email]
-                )
+                resend.Emails.send({
+                    "from": "Cyberion ThreatShield <onboarding@resend.dev>",
+                    "to": [email],
+                    "subject": "Cyberion ThreatShield - Password Reset",
+                    "html": f"""
+                        <h2>Hello {username},</h2>
 
-                msg.body = f"""Hello {username},
+                        <p>A password reset was requested for your Cyberion ThreatShield account.</p>
 
-A password reset was requested for your Cyberion ThreatShield account.
+                        <p>
+                            <a href="{reset_link}">
+                                Reset your password
+                            </a>
+                        </p>
 
-Use this link to reset your password:
+                        <p>This link expires in 15 minutes.</p>
 
-{reset_link}
+                        <p>If you did not request a password reset, you can ignore this email.</p>
+                    """
+                })
 
-This link expires in 15 minutes.
-
-If you did not request a password reset, you can ignore this email.
-"""
-
-                print("DEBUG: attempting to send reset email")
-                mail.send(msg)
                 print("Password reset email sent.")
 
             except Exception as e:
                 print(f"Email sending failed: {e}")
+   
     return render_template(
         "forgot_password.html",
         error=error,
