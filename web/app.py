@@ -419,9 +419,9 @@ def forgot_password():
                 break
 
         message = (
-            "If an account exists for this email, "
-            "a password reset link has been generated."
-        )
+    "Reset request received. "
+    "If this email is registered, a password reset link will arrive shortly."
+)
 
         if username:
             token = reset_serializer.dumps(
