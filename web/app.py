@@ -481,7 +481,11 @@ def reset_password(token):
         )
 
     users = load_users()
-
+print("DEBUG: user count =", len(users))
+print("DEBUG: submitted email found =", any(
+    user.get("email", "").lower() == email
+    for user in users.values()
+))
     if username not in users:
         return render_template(
             "reset_password.html",
