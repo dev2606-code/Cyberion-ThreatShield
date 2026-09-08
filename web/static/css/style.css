@@ -2049,3 +2049,506 @@ body {
 .forgot-back a:hover {
     text-decoration: underline;
 }
+/* =========================================================
+   CYBERION - FORGOT PASSWORD
+   ========================================================= */
+
+.forgot-page {
+    min-height: 100vh;
+    margin: 0;
+    color: #f8fafc;
+    background:
+        radial-gradient(circle at 20% 45%, rgba(14, 165, 233, 0.12), transparent 32%),
+        radial-gradient(circle at 80% 30%, rgba(59, 130, 246, 0.08), transparent 30%),
+        #08111f;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+
+/* Header */
+
+.forgot-header {
+    width: min(1240px, calc(100% - 48px));
+    margin: 0 auto;
+    min-height: 105px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.forgot-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.forgot-brand h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #f8fafc;
+}
+
+.forgot-brand p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.forgot-signin {
+    padding: 10px 24px;
+
+    color: #e2e8f0;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+
+    border: 1px solid rgba(56, 189, 248, 0.30);
+    border-radius: 9px;
+
+    transition: 0.2s ease;
+}
+
+.forgot-signin:hover {
+    color: #38bdf8;
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.07);
+}
+
+
+/* Main layout */
+
+.forgot-layout {
+    width: min(1180px, calc(100% - 48px));
+    margin: 70px auto 45px;
+
+    display: grid;
+    grid-template-columns: 0.75fr 1.25fr;
+    gap: 85px;
+    align-items: center;
+}
+
+
+/* Left information */
+
+.forgot-info {
+    padding: 20px 0;
+}
+
+.forgot-info .eyebrow {
+    color: #38bdf8;
+    letter-spacing: 2px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.forgot-info h1 {
+    margin: 14px 0 20px;
+
+    font-size: clamp(38px, 4vw, 54px);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+}
+
+.forgot-info h1 span {
+    display: block;
+    color: #38bdf8;
+}
+
+.forgot-info-text {
+    max-width: 390px;
+    margin-bottom: 38px;
+
+    color: #94a3b8;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.forgot-feature {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    margin: 19px 0;
+
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.forgot-feature span {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #38bdf8;
+    font-size: 19px;
+
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    border-radius: 10px;
+
+    background: rgba(14, 165, 233, 0.08);
+
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.08);
+}
+
+
+/* Recovery card */
+
+.forgot-card {
+    width: 100%;
+    max-width: 610px;
+
+    padding: 45px 50px;
+    box-sizing: border-box;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15, 29, 48, 0.97),
+            rgba(8, 20, 36, 0.98)
+        );
+
+    border: 1px solid rgba(56, 189, 248, 0.22);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.30),
+        0 0 50px rgba(14, 165, 233, 0.04);
+
+    text-align: center;
+}
+
+.forgot-lock {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 28px;
+
+    background: rgba(14, 165, 233, 0.10);
+    border: 1px solid rgba(56, 189, 248, 0.30);
+
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.10);
+}
+
+.forgot-card .eyebrow {
+    margin: 0 0 10px;
+
+    color: #38bdf8;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.forgot-card h2 {
+    margin: 0;
+
+    color: #f8fafc;
+    font-size: 30px;
+    letter-spacing: -0.5px;
+}
+
+.forgot-subtitle {
+    max-width: 430px;
+
+    margin: 10px auto 27px;
+
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* Success message */
+
+.forgot-success {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin: 0 0 25px;
+    padding: 15px 17px;
+
+    text-align: left;
+
+    border-radius: 11px;
+
+    color: #d1fae5;
+
+    background: rgba(16, 185, 129, 0.11);
+    border: 1px solid rgba(52, 211, 153, 0.45);
+}
+
+.forgot-success-icon {
+    min-width: 34px;
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #052e23;
+    background: #34d399;
+
+    font-weight: 900;
+}
+
+.forgot-success strong {
+    display: block;
+    margin-bottom: 3px;
+
+    font-size: 13px;
+}
+
+.forgot-success p {
+    margin: 0;
+
+    color: #a7f3d0;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+
+/* Form */
+
+.forgot-card form {
+    text-align: left;
+}
+
+.forgot-card .login-field {
+    margin-bottom: 20px;
+}
+
+.forgot-card .login-field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.forgot-card .login-field input {
+    width: 100%;
+    height: 52px;
+
+    box-sizing: border-box;
+
+    padding: 0 16px;
+
+    color: #f8fafc;
+
+    background: rgba(3, 12, 24, 0.45);
+
+    border: 1px solid rgba(148, 163, 184, 0.20);
+    border-radius: 10px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+.forgot-card .login-field input::placeholder {
+    color: #64748b;
+}
+
+.forgot-card .login-field input:focus {
+    border-color: #38bdf8;
+
+    box-shadow:
+        0 0 0 3px rgba(56, 189, 248, 0.08),
+        0 0 20px rgba(56, 189, 248, 0.06);
+}
+
+
+/* Reset button */
+
+.forgot-button {
+    width: 100%;
+    height: 52px;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    color: #03111f;
+    font-size: 14px;
+    font-weight: 800;
+
+    background: linear-gradient(
+        90deg,
+        #2f8cff,
+        #48c8f5
+    );
+
+    box-shadow: 0 12px 30px rgba(56, 189, 248, 0.15);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.forgot-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 15px 35px rgba(56, 189, 248, 0.25);
+}
+
+
+/* Divider */
+
+.forgot-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin: 27px 0 22px;
+
+    color: #64748b;
+    font-size: 11px;
+}
+
+.forgot-divider::before,
+.forgot-divider::after {
+    content: "";
+    flex: 1;
+
+    height: 1px;
+
+    background: rgba(148, 163, 184, 0.15);
+}
+
+
+/* Back to login */
+
+.forgot-back {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 13px;
+}
+
+.forgot-back a {
+    margin-left: 4px;
+
+    color: #38bdf8;
+
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.forgot-back a:hover {
+    text-decoration: underline;
+}
+
+
+/* Footer */
+
+.forgot-footer {
+    padding: 15px 20px 30px;
+
+    text-align: center;
+
+    color: #64748b;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .forgot-layout {
+        grid-template-columns: 1fr;
+        gap: 35px;
+
+        margin-top: 35px;
+    }
+
+    .forgot-info {
+        text-align: center;
+    }
+
+    .forgot-info-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .forgot-feature {
+        max-width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .forgot-card {
+        margin: 0 auto;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .forgot-header {
+        width: calc(100% - 30px);
+        min-height: 85px;
+    }
+
+    .forgot-brand h2 {
+        font-size: 16px;
+    }
+
+    .forgot-brand p {
+        font-size: 10px;
+    }
+
+    .forgot-signin {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    .forgot-layout {
+        width: calc(100% - 30px);
+        margin-top: 25px;
+    }
+
+    .forgot-info h1 {
+        font-size: 36px;
+    }
+
+    .forgot-info-text {
+        font-size: 14px;
+    }
+
+    .forgot-card {
+        padding: 32px 20px;
+        border-radius: 16px;
+    }
+
+    .forgot-card h2 {
+        font-size: 25px;
+    }
+
+    .forgot-success {
+        align-items: flex-start;
+    }
+}
