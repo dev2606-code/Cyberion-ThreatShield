@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Account Created | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body class="login-body">
+
+    <div class="login-container">
+
+        <div class="login-brand">
+            <div class="login-logo">C</div>
+
+            <div>
+                <h1>Cyberion ThreatShield</h1>
+                <p>Detection Engineering Platform</p>
+            </div>
+        </div>
+
+        <div class="login-card account-created-card">
+
+            <div class="success-icon">✓</div>
+
+            <p class="eyebrow">ACCOUNT READY</p>
+
+            <h2>Account Created Successfully!</h2>
+
+            <p class="login-subtitle">
+                Your Cyberion ThreatShield account is ready.
+                You can now sign in to access your security dashboard.
+            </p>
+
+            <a href="{{ url_for('login') }}" class="login-button success-login-button">
+                Continue to Login
+            </a>
+
+            <div class="login-security">
+                <span class="status-dot"></span>
+                Secure account registration completed
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

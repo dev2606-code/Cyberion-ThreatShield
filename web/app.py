@@ -520,8 +520,7 @@ def reset_password(token):
 
             save_users(users)
 
-            return redirect(url_for("login"))
-
+        return render_template("account_created.html")
     return render_template(
         "reset_password.html",
         error=error

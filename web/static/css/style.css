@@ -1983,4 +1983,30 @@ body {
     align-items: center;
     gap: 6px;
     width: 100%;
+}/* Account Created Success Page */
+
+.account-created-card {
+    text-align: center;
+}
+
+.success-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.10);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.success-login-button {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 24px;
 }
