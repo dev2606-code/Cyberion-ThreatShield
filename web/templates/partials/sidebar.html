@@ -42,6 +42,10 @@
            href="/status">
             System Status
         </a>
+                <a class="nav-item {% if active_page == 'profile' %}active{% endif %}"
+           href="{{ url_for('profile') }}">
+            Profile
+        </a>
         <a class="nav-item logout-item"
    href="{{ url_for('logout') }}">
     Logout

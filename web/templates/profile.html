@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile | Cyberion ThreatShield</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    {% include "partials/sidebar.html" %}
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">ACCOUNT</p>
+                <h1>My Profile</h1>
+                <p class="page-subtitle">
+                    Manage your Cyberion ThreatShield account.
+                </p>
+            </div>
+        </header>
+<section class="panel profile-panel">
+
+    <div class="profile-top">
+
+        <div class="profile-avatar">
+            {{ username[0]|upper if username else "U" }}
+        </div>
+
+        <div class="profile-heading">
+            <h2>{{ username }}</h2>
+
+            <p class="profile-email">
+                {{ email or "Email not available" }}
+            </p>
+        </div>
+
+    </div>
+
+    <div class="profile-info-grid">
+
+        <div class="profile-info-card">
+            <span>Username</span>
+            <strong>{{ username }}</strong>
+        </div>
+
+        <div class="profile-info-card">
+            <span>Email Address</span>
+            <strong>{{ email or "Not available" }}</strong>
+        </div>
+
+        <div class="profile-info-card">
+            <span>Account Status</span>
+            <strong class="profile-active">
+                Active
+            </strong>
+        </div>
+
+        <div class="profile-info-card">
+            <span>Security Workspace</span>
+            <strong>
+                Protected
+            </strong>
+        </div>
+
+    </div>
+
+</section>
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -760,6 +760,24 @@ def status_page():
         analytics=analytics,
         latest_scan=latest_scan
     )
+@app.route("/profile")
+@login_required
+def profile():
+
+    username = session.get("username", "")
+    email = session.get("email", "")
+
+    if username and not email:
+        users = load_users()
+        user = users.get(username, {})
+        email = user.get("email", "")
+
+    return render_template(
+        "profile.html",
+        active_page="profile",
+        username=username,
+        email=email
+    )
 # --------------------------------------------------
 # EVTX UPLOAD + SCAN
 # --------------------------------------------------

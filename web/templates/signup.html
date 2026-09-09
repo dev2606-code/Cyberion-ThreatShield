@@ -13,109 +13,278 @@
     >
 </head>
 
-<body class="login-body">
+<body class="login-body cyber-login-body signup-v2-body">
 
-    <div class="login-container">
+    <div class="cyber-login-grid"></div>
+    <div class="cyber-login-glow"></div>
 
-        <div class="login-brand">
-            <div class="login-logo">C</div>
+    <main class="cyber-login-page">
+
+        <!-- HEADER -->
+        <header class="cyber-login-header">
+
+            <div class="login-brand">
+
+                <div class="login-logo">
+                    C
+                </div>
+
+                <div>
+                    <h1>Cyberion ThreatShield</h1>
+                    <p>Detection Engineering Platform</p>
+                </div>
+
+            </div>
+
+            <div class="cyber-header-status">
+                <span class="status-dot"></span>
+                Secure &nbsp; | &nbsp; Detect &nbsp; | &nbsp; Respond
+            </div>
+
+        </header>
+
+
+        <!-- MAIN CONTENT -->
+        <section class="cyber-login-content signup-v2-content">
+
+            <!-- LEFT SIDE -->
+            <div class="cyber-login-intro">
+
+                <p class="cyber-kicker">
+                    A SAFER TOMORROW
+                </p>
+
+                <h2>
+                    Join the Next<br>
+                    Generation of<br>
+                    <span>Cyber Defense.</span>
+                </h2>
+
+                <p class="cyber-intro-text">
+                    Create your Cyberion ThreatShield account
+                    and access a focused workspace for detection
+                    engineering and security analysis.
+                </p>
+
+
+                <div class="cyber-features">
+
+                    <div class="cyber-feature">
+
+                        <div class="cyber-feature-icon">
+                            ◇
+                        </div>
+
+                        <div>
+                            <strong>Threat Detection</strong>
+                            <span>Analyze security events</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="cyber-feature">
+
+                        <div class="cyber-feature-icon">
+                            ▥
+                        </div>
+
+                        <div>
+                            <strong>Security Analytics</strong>
+                            <span>Turn data into insights</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="cyber-feature">
+
+                        <div class="cyber-feature-icon">
+                            ≡
+                        </div>
+
+                        <div>
+                            <strong>Detection Rules</strong>
+                            <span>Rule-based identification</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="cyber-feature">
+
+                        <div class="cyber-feature-icon">
+                            ✓
+                        </div>
+
+                        <div>
+                            <strong>Secure Workspace</strong>
+                            <span>Protected analyst environment</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SIGNUP CARD -->
+            <div class="cyber-login-card-wrap signup-card-wrap">
+
+                <div class="login-card cyber-login-card signup-v2-card">
+
+                    <div class="cyber-card-logo">
+                        C
+                    </div>
+
+                    <p class="eyebrow">
+                        CREATE ACCOUNT
+                    </p>
+
+                    <h2>
+                        Sign Up
+                    </h2>
+
+                    <p class="login-subtitle">
+                        Create your account to access Cyberion ThreatShield.
+                    </p>
+
+
+                    {% if error %}
+
+                    <div class="message error">
+                        {{ error }}
+                    </div>
+
+                    {% endif %}
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('signup') }}"
+                    >
+
+                        <!-- USERNAME -->
+                        <div class="login-field">
+
+                            <label for="username">
+                                Username
+                            </label>
+
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="Choose a username"
+                                autocomplete="username"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+                        <div class="login-field">
+
+                            <label for="email">
+                                Email Address
+                            </label>
+
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- PASSWORD -->
+                        <div class="login-field">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Create a password"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- CONFIRM PASSWORD -->
+                        <div class="login-field">
+
+                            <label for="confirm_password">
+                                Confirm Password
+                            </label>
+
+                            <input
+                                id="confirm_password"
+                                name="confirm_password"
+                                type="password"
+                                placeholder="Confirm your password"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                        </div>
+
+
+                        <button
+                            class="login-button"
+                            type="submit"
+                        >
+                            Create Account →
+                        </button>
+
+                    </form>
+
+
+                    <p class="login-security signup-link">
+
+                        <span>
+                            Already have an account?
+                        </span>
+
+                        <a href="{{ url_for('login') }}">
+                            Sign In
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer class="cyber-login-footer">
+
+            <span>
+                CYBERION THREATSHIELD
+            </span>
 
             <div>
-                <h1>Cyberion ThreatShield</h1>
-                <p>Detection Engineering Platform</p>
+                <span class="status-dot"></span>
+                Protected security workspace
             </div>
-        </div>
 
-        <div class="login-card">
+        </footer>
 
-            <p class="eyebrow">CREATE ACCOUNT</p>
-
-            <h2>Sign Up</h2>
-
-            <p class="login-subtitle">
-                Create your account to access Cyberion ThreatShield.
-            </p>
-
-            {% if error %}
-            <div class="message error">
-                {{ error }}
-            </div>
-            {% endif %}
-
-            <form method="POST" action="{{ url_for('signup') }}">
-
-                <div class="login-field">
-                    <label for="username">Username</label>
-
-                    <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        placeholder="Choose a username"
-                        autocomplete="username"
-                        required
-                    >
-              </div>
-
-<div class="login-field">
-    <label for="email">Email Address</label>
-
-    <input
-        id="email"
-        name="email"
-        type="email"
-        placeholder="Enter your email"
-        autocomplete="email"
-        required
-    >
-</div>
-
-<div class="login-field">
-    <label for="password">Password</label>
-
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder="Create a password"
-                        autocomplete="new-password"
-                        required
-                    >
-                </div>
-
-                <div class="login-field">
-                    <label for="confirm_password">
-                        Confirm Password
-                    </label>
-
-                    <input
-                        id="confirm_password"
-                        name="confirm_password"
-                        type="password"
-                        placeholder="Confirm your password"
-                        autocomplete="new-password"
-                        required
-                    >
-                </div>
-
-                <button class="login-button" type="submit">
-                    Create Account
-                </button>
-
-            </form>
-
-            <p class="login-security">
-                Already have an account?
-                <a href="{{ url_for('login') }}">Sign In</a>
-            </p>
-
-        </div>
-
-        <p class="login-footer">
-            Cyberion ThreatShield • Detection Engineering Platform
-        </p>
-
-    </div>
+    </main>
 
 </body>
 </html>
