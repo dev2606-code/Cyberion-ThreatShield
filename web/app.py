@@ -15,9 +15,7 @@ from flask import (
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
-from flask_mail import Mail, Message
 from authlib.integrations.flask_client import OAuth
-from flask_mail import Mail, Message
 import resend
 resend.api_key = os.environ.get("RESEND_API_KEY")
 # --------------------------------------------------
@@ -67,15 +65,7 @@ google = oauth.register(
         "scope": "openid email profile"
     }
 )
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
 
-app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
-app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
-app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME")
-
-mail = Mail(app)
 ADMIN_USERNAME = os.environ.get(
     "ADMIN_USERNAME",
     "admin"
