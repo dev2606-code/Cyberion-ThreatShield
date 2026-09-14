@@ -3811,3 +3811,15 @@ html {
 body {
     min-height: 100vh;
 }
+/* KEEP ALL PAGE HEADERS SAME HEIGHT */
+
+@media (min-width: 761px) {
+    .topbar {
+        min-height: 105px;
+        align-items: flex-start;
+    }
+
+    .topbar > div:first-child {
+        min-height: 105px;
+    }
+}
