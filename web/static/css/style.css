@@ -3802,3 +3802,12 @@ body {
 
     background-attachment: fixed !important;
 }
+/* FIX PAGE LAYOUT SHIFT */
+
+html {
+    overflow-y: scroll;
+}
+
+body {
+    min-height: 100vh;
+}
